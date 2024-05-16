@@ -1,0 +1,2 @@
+# syntaxgo
+就是golang的ast语法分析树和golang的reflect反射包的封装，让你更方便的去分析代码，最终实现自动生成新功能代码的效果
