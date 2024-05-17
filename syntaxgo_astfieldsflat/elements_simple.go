@@ -39,7 +39,7 @@ func SimpleMakeNameFunction(rightPrefix string) MakeNameFunction {
 				}
 			} else {
 				if idx == 0 {
-					return rightPrefix
+					return rightPrefix //就是正确返回值的前缀
 				} else {
 					return rightPrefix + strconv.Itoa(idx)
 				}

@@ -111,7 +111,7 @@ func (xs NameTypeElements) Kinds() []string {
 }
 
 func (xs NameTypeElements) GetNamesAddressesStats() StatementParts {
-	return utils.SetPrefixToSlice("&", xs.Names())
+	return utils.SetPrefixToSliceGetElems("&", xs.Names())
 }
 
 func (xs NameTypeElements) GetFunctionParamsStats() StatementParts {
@@ -135,7 +135,7 @@ func (xs NameTypeElements) GetNamesKindsStats() StatementParts {
 }
 
 func (xs NameTypeElements) GetVariablesDefineLines() StatementLines {
-	return utils.SetPrefixToSlice("var ", xs.GetNamesKindsStats())
+	return utils.SetPrefixToSliceGetElems("var ", xs.GetNamesKindsStats())
 }
 
 func (xs NameTypeElements) GetVariablesGroupByKindsDefineLines() StatementLines {

@@ -6,7 +6,7 @@ import (
 	"github.com/yyle88/zaplog"
 )
 
-func SetPrefixToSlice(prefix string, a []string) (ss []string) {
+func SetPrefixToSliceGetElems(prefix string, a []string) (ss []string) {
 	ss = make([]string, 0, len(a))
 	for _, v := range a {
 		ss = append(ss, prefix+v)
@@ -41,16 +41,16 @@ func SetDoubleQuotes(s string) string {
 	return "\"" + s + "\""
 }
 
-func BooleanOK(v bool) bool {
+func AssertBooleanOK(v bool) bool {
 	if !v {
 		zaplog.ZAPS.P1.LOG.Panic("B IS FALSE")
 	}
 	return v
 }
 
-func AnyKeyInMap[K comparable, V any](m map[K]V) (k K) {
-	for xk := range m {
-		return xk
+func GetMapKeys[K comparable, V any](m map[K]V) (ks []K) {
+	for k := range m {
+		ks = append(ks, k)
 	}
-	return k //返回默认值比如0或者空字符串等
+	return ks //返回默认值比如0或者空字符串等
 }

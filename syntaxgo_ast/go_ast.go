@@ -15,8 +15,8 @@ import (
 )
 
 /*
-Go语言语法分析方法。
-ast.File
+Go语言语法分析方法使用
+通过 ast.File 获得各种元素，比如 包名，引用，结构，函数
 */
 
 // NewAstXFilepath
@@ -91,7 +91,7 @@ func ChangeNodeBytesXNewLines(source []byte, astNode ast.Node, newCode []byte, n
 	)
 }
 
-func GetFuncDefineString(source []byte, astFunc *ast.FuncDecl) string {
+func GetFuncDefineCode(source []byte, astFunc *ast.FuncDecl) string {
 	return string(source[astFunc.Pos()-1 : astFunc.Body.Lbrace-1])
 }
 

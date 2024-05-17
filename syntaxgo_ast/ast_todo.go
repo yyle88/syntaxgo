@@ -28,6 +28,7 @@ func cvtAstFileToBytes(astFile *ast.File) ([]byte, error) {
 // 其次是，当源代码中完全没有 import 这字段时，代码将不能主动添加，而是会报异常，这个我觉得很不科学
 // 我的意图，我发现，当我自己用字符串拼接写出源代码时，假如我不写引用，在执行 format 格式化的时候就会特别慢，特别慢，很明显这个问题需要解决
 // 因此我手动实现了追加 import 的逻辑
+// TODO 就静候有缘人来啦
 func addImportOfPkgPath(fileSet *token.FileSet, astFile *ast.File, path string) bool {
 	return astutil.AddImport(fileSet, astFile, path)
 }
