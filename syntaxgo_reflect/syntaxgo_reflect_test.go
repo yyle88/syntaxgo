@@ -88,6 +88,9 @@ func TestGetTypeUsageCodeV2(t *testing.T) {
 func TestGetPkgPathV2(t *testing.T) {
 	t.Log(GetPkgPathV2[Example]())
 	t.Log(GetPkgNameV2[Example]())
+
+	t.Log(GetPkgPathV2[*Example]()) //这个是不行的，目前不支持往里面传指针类型，但并不会panic而是返回空白
+	t.Log(GetPkgNameV2[*Example]()) //这个是不行的，目前不支持往里面传指针类型，但并不会panic而是返回空白
 }
 
 func TestGetPkgPaths(t *testing.T) {

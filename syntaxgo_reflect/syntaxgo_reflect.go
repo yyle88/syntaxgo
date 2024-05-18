@@ -20,8 +20,7 @@ func GetPkgPath(a any) string {
 // 认为非泛型版也是很有用的（当对象是从函数传过来的，而外部函数非泛型时，而外部函数非常底层没法逐级加泛型时，或者对象过多时，使用非范型版都是有优势的）
 // 因此保留非范型版而把范型版命名为V2，毕竟只添加两个字符就能解决问题，还能保证含义不变，V2也还行
 func GetPkgPathV2[T any]() string {
-	var a T
-	return reflect.TypeOf(a).PkgPath()
+	return reflect.TypeOf(GetObject[T]()).PkgPath()
 }
 
 func GetPkgName(a any) string {
@@ -33,8 +32,11 @@ func GetPkgName(a any) string {
 }
 
 func GetPkgNameV2[T any]() string {
-	var a T
-	return GetPkgName(a)
+	return GetPkgName(GetObject[T]())
+}
+
+func GetObject[T any]() (a T) {
+	return a //TODO 目前暂时不知道如何在编译阶段就能阻止类型传指针，即"[*A]"这样的，因为通过指针对象得不到类型
 }
 
 func GetTypeName(a any) string {
@@ -42,8 +44,7 @@ func GetTypeName(a any) string {
 }
 
 func GetTypeNameV2[T any]() string {
-	var a T
-	return GetTypeName(a)
+	return GetTypeName(GetObject[T]())
 }
 
 // GetTypeUsageCode 获取在其它包调用某包类型的代码，比如包名是 abc 而类型名是 Demo 则在其它包调用时就是 abc.Demo 这样的，因此这个操作也是非常重要的
@@ -59,8 +60,7 @@ func GetTypeUsageCode(a any) string {
 }
 
 func GetTypeUsageCodeV2[T any]() string {
-	var object T
-	return GetTypeUsageCode(object)
+	return GetTypeUsageCode(GetObject[T]())
 }
 
 func GetObjectsTypes(objects []any) []reflect.Type {
