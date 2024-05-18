@@ -4,10 +4,13 @@ import (
 	"go/token"
 	"reflect"
 	"slices"
+	"strings"
 
 	"github.com/yyle88/done"
 	"github.com/yyle88/syntaxgo/internal/utils"
 	"github.com/yyle88/syntaxgo/syntaxgo_reflect"
+	"github.com/yyle88/zaplog"
+	"go.uber.org/zap"
 )
 
 // AddImportsOfPackages 把需要引用的包路径增加到代码里
@@ -22,17 +25,25 @@ func AddImportsOfPackages(source []byte, packages []string) []byte {
 	// 把要导入的包设置为map
 	var missMap = make(map[string]bool)
 	for _, pkgPath := range packages {
+		if pkgPath == "" {
+			zaplog.LOG.Warn("skip an empty pkg_path")
+			continue
+		}
+		if strings.Contains(pkgPath, `"`) { //这种情况虽然能适配，但不做适配，让客户自己注意就行，毕竟参数名就是path的意思，通常path就是不带双引号的
+			zaplog.LOG.Warn("skip an wrong pkg_path contains double quotes", zap.String("pkg_path", pkgPath))
+			continue
+		}
 		missMap[utils.SetDoubleQuotes(pkgPath)] = true
 	}
 
-	// 遍历引用的包，删除已经存在包，map里剩下的包才需要导入到代码里
+	// 遍历引用的包，删除已经存在包，map里剩下的包才需要导入到代码里，虽然不删除的也能用，只要后面【格式化】就行，但这里还是删除已重复的更好些
 	for _, one := range astFile.Imports {
 		delete(missMap, one.Path.Value)
 	}
 
 	if len(missMap) > 0 {
 		pkg2quotes := utils.GetMapKeys(missMap)
-		slices.Sort(pkg2quotes)
+		slices.Sort(pkg2quotes) //排序也是为了让生成的代码保持稳定，但后面用【格式化】以后还是会改变顺序的，但认为排序还是有一定意义的
 
 		ptx := utils.NewPTX()
 		ptx.Println()         //需要换行符
@@ -74,14 +85,21 @@ func AddImportsOfPackages(source []byte, packages []string) []byte {
 	return source
 }
 
-type AddImportsParam struct {
+// InjectImports 根据要使用的类型，得到要引用的包路径，把要引用的包设置到代码里，返回修改后的代码
+// InjectImports 这个名称突出了代码在引入包路径方面的操作，可以理解为将所需的包路径注入到代码中
+// 逻辑完全使用 AddImports 函数的，相同的功能提供不同的函数名，也是方便用户使用，不同的人喜欢不同的命名，毕竟GPT也推荐这个函数名
+func InjectImports(source []byte, param *PackageImportOptions) []byte {
+	return AddImports(source, param)
+}
+
+type PackageImportOptions struct {
 	Packages   []string       //直接设置包路径列表
 	UsingTypes []reflect.Type //设置反射类型，通过类型能找到包路径
 	Objects    []any          //设置要引用的对象列表(非指针对象)，通过对象也能找到对象的包路径
 }
 
 // AddImports 根据要使用的类型，得到要引用的包路径，把要引用的包设置到代码里，返回修改后的代码
-func AddImports(source []byte, param *AddImportsParam) []byte {
+func AddImports(source []byte, param *PackageImportOptions) []byte {
 	packagePaths := utils.SafeMerge(
 		param.Packages,
 		syntaxgo_reflect.GetPkgPaths(param.UsingTypes),
