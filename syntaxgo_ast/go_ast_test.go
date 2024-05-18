@@ -12,9 +12,9 @@ import (
 
 func TestNewAstXFilepath(t *testing.T) {
 	path := runtestpath.SrcPath(t)
-	astFile, e := NewAstXFilepath(path)
-	require.NoError(t, e)
-	ast.Print(token.NewFileSet(), astFile)
+	astFile, err := NewAstXFilepath(path)
+	require.NoError(t, err)
+	_ = ast.Print(token.NewFileSet(), astFile)
 }
 
 func TestSeekFuncXName(t *testing.T) {

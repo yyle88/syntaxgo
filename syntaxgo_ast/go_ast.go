@@ -38,10 +38,11 @@ func NewAstImportsOnlyXFilepath(path string) (astFile *ast.File, e error) {
 
 // NewAstFromSource 这个函数适用于我把文件已经读出来的场景
 // 这时候我将会直接使用二进制的 data 内容
-// 因此这个时候 path 只是参考值，也允许传空白字符串，都不影响，看调用者的心情
-func NewAstFromSource(path string, data []byte) (astFile *ast.File, e error) {
+// 因此这个时候 filename 只是参考值，也允许传空白字符串，都不影响，看调用者的心情
+// 因此我为了简化代码就不设置这个参数啦，只传递文件内容即可
+func NewAstFromSource(data []byte) (astFile *ast.File, e error) {
 	fileSet := token.NewFileSet()
-	astFile, e = parser.ParseFile(fileSet, path, data, parser.ParseComments)
+	astFile, e = parser.ParseFile(fileSet, "", data, parser.ParseComments)
 	if e != nil {
 		return nil, e
 	}

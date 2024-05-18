@@ -18,7 +18,7 @@ func Test_addImportOfPkgPath(t *testing.T) {
 		fmt.Println(time.Now()) //随便打印当前时间
 	}
 `
-	astFile, err := NewAstFromSource("", []byte(code))
+	astFile, err := NewAstFromSource([]byte(code))
 	require.NoError(t, err)
 
 	//问题：假如代码中完全没有 import 这个块时，代码会直接报异常

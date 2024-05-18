@@ -18,7 +18,7 @@ func TestAddImportsOfPackages(t *testing.T) {
 `
 	t.Log(code)
 
-	var newSrc = AddImportsOfPackages("abc.go", []byte(code), []string{
+	var newSrc = AddImportsOfPackages([]byte(code), []string{
 		"fmt",
 		"strconv",
 	})

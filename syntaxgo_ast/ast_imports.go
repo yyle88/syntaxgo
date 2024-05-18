@@ -10,22 +10,12 @@ import (
 	"github.com/yyle88/syntaxgo/syntaxgo_reflect"
 )
 
-// AddImportsOfTypes 根据要使用的类型，得到要引用的包路径，把要引用的包设置到代码里，返回修改后的代码
-func AddImportsOfTypes(filename string, source []byte, usingTypes []reflect.Type) []byte {
-	return AddImportsOfPackages(filename, source, syntaxgo_reflect.GetPkgPaths(usingTypes))
-}
-
-// AddImportsOfObjects 根据要使用的对象，得到要引用的包路径，把要引用的包设置到代码里，返回修改后的代码
-func AddImportsOfObjects(filename string, source []byte, objects []any) []byte {
-	return AddImportsOfTypes(filename, source, syntaxgo_reflect.GetObjectsTypes(objects))
-}
-
 // AddImportsOfPackages 把需要引用的包路径增加到代码里
 // 这个函数非常重要，因为有时候就是找不到包名，而有时候有重复的包名，比如"errors"和"github.com/pkg/errors"，而即使是有唯一的包，让代码自动去格式化和找就会非常的耗时
 // 因此推荐就是在生成代码时同时也把要引用的都添加进来，这样代码格式化就会非常快
 // 因此在这个文件里，我定义了不同的设置包名的函数，因为这个确实是非常的重要
-func AddImportsOfPackages(filename string, source []byte, packages []string) []byte {
-	astFile := done.VCE(NewAstFromSource(filename, source)).Nice()
+func AddImportsOfPackages(source []byte, packages []string) []byte {
+	astFile := done.VCE(NewAstFromSource(source)).Nice()
 	utils.AssertBooleanOK(astFile.Package.IsValid()) //没有定义包名的不能使用该功能-即不能补充需要的引用
 	utils.AssertBooleanOK(astFile.Name != nil)       //没有定义包名的不能使用该功能-即不能补充需要的引用
 
@@ -84,12 +74,19 @@ func AddImportsOfPackages(filename string, source []byte, packages []string) []b
 	return source
 }
 
-// AddImportsOfPackagesAndTypes 有些包里只有函数或者接口，没有类型，这时候就得不到它的包路径，因此还是得用字符串把包名传进来
-func AddImportsOfPackagesAndTypes(filename string, source []byte, packages []string, usingTypes []reflect.Type) []byte {
-	return AddImportsOfPackages(filename, source, utils.SafeMerge(packages, syntaxgo_reflect.GetPkgPaths(usingTypes)))
+type AddImportsParam struct {
+	Packages   []string       //直接设置包路径列表
+	UsingTypes []reflect.Type //设置反射类型，通过类型能找到包路径
+	Objects    []any          //设置要引用的对象列表(非指针对象)，通过对象也能找到对象的包路径
 }
 
-// AddImportsOfPackagesAndObjects 有些包里只有函数或者接口，没有类型，这时候就得不到它的包路径，因此还是得用字符串把包名传进来
-func AddImportsOfPackagesAndObjects(filename string, source []byte, packages []string, objects []any) []byte {
-	return AddImportsOfPackagesAndTypes(filename, source, packages, syntaxgo_reflect.GetObjectsTypes(objects))
+// AddImports 根据要使用的类型，得到要引用的包路径，把要引用的包设置到代码里，返回修改后的代码
+func AddImports(source []byte, param *AddImportsParam) []byte {
+	packagePaths := utils.SafeMerge(
+		param.Packages,
+		syntaxgo_reflect.GetPkgPaths(param.UsingTypes),
+		syntaxgo_reflect.GetPkgPaths(syntaxgo_reflect.GetObjectsTypes(param.Objects)),
+	)
+
+	return AddImportsOfPackages(source, packagePaths)
 }
