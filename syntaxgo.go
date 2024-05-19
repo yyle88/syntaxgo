@@ -9,3 +9,8 @@ import (
 func CurrentPackageName() string {
 	return syntaxgo_ast.GetPkgNameXPath(runpath.Skip(1))
 }
+
+// GetPkgName 获得某个go文件的包名
+func GetPkgName(path string) string {
+	return syntaxgo_ast.GetPkgNameXPath(path)
+}

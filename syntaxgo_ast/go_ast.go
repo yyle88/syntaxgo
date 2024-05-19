@@ -103,7 +103,7 @@ func GetPkgNameXPath(path string) string {
 	return pkgName
 }
 
-func GetPkgName(astFile *ast.File) (packageName string) {
+func GetPkgNameXFile(astFile *ast.File) (packageName string) {
 	return astFile.Name.Name
 }
 

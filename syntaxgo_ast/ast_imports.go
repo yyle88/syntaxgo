@@ -98,13 +98,34 @@ type PackageImportOptions struct {
 	Objects    []any          //设置要引用的对象列表(非指针对象)，通过对象也能找到对象的包路径
 }
 
-// AddImports 根据要使用的类型，得到要引用的包路径，把要引用的包设置到代码里，返回修改后的代码
-func AddImports(source []byte, param *PackageImportOptions) []byte {
-	packagePaths := utils.SafeMerge(
+func NewPackageImportOptions() *PackageImportOptions {
+	return &PackageImportOptions{}
+}
+
+func (param *PackageImportOptions) SetPkgPath(pkgPath string) *PackageImportOptions {
+	param.Packages = append(param.Packages, pkgPath)
+	return param
+}
+
+func (param *PackageImportOptions) SetUsingType(reflectType reflect.Type) *PackageImportOptions {
+	param.UsingTypes = append(param.UsingTypes, reflectType)
+	return param
+}
+
+func (param *PackageImportOptions) SetObject(object any) *PackageImportOptions {
+	param.Objects = append(param.Objects, object)
+	return param
+}
+
+func (param *PackageImportOptions) GetPkgPaths() []string {
+	return utils.SafeMerge(
 		param.Packages,
 		syntaxgo_reflect.GetPkgPaths(param.UsingTypes),
 		syntaxgo_reflect.GetPkgPaths(syntaxgo_reflect.GetObjectsTypes(param.Objects)),
 	)
+}
 
-	return AddImportsOfPackages(source, packagePaths)
+// AddImports 根据要使用的类型，得到要引用的包路径，把要引用的包设置到代码里，返回修改后的代码
+func AddImports(source []byte, param *PackageImportOptions) []byte {
+	return AddImportsOfPackages(source, param.GetPkgPaths())
 }
