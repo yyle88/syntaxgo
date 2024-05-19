@@ -12,5 +12,5 @@ func TestCurrentPackageName(t *testing.T) {
 }
 
 func TestGetPkgName(t *testing.T) {
-	t.Log(syntaxgo.GetPkgName(runtestpath.SrcName(t)))
+	t.Log(syntaxgo.GetPkgName(runtestpath.SrcPath(t)))
 }
