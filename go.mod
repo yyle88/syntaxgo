@@ -6,7 +6,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.9.0
 	github.com/yyle88/done v1.0.0
-	github.com/yyle88/runpath v1.0.3
+	github.com/yyle88/runpath v1.0.4
 	github.com/yyle88/zaplog v0.0.2
 	go.uber.org/zap v1.27.0
 	golang.org/x/tools v0.21.0
