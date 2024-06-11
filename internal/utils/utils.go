@@ -6,12 +6,12 @@ import (
 	"github.com/yyle88/zaplog"
 )
 
-func SetPrefixToSliceGetElems(prefix string, a []string) (ss []string) {
-	ss = make([]string, 0, len(a))
+func SetPrefixToStrings(prefix string, a []string) (results []string) {
+	results = make([]string, 0, len(a))
 	for _, v := range a {
-		ss = append(ss, prefix+v)
+		results = append(results, prefix+v)
 	}
-	return ss
+	return results
 }
 
 func SafeMerge[V any](a ...[]V) (res []V) {
@@ -29,7 +29,7 @@ func SumLength[V any](a ...[]V) (n int) {
 	return n
 }
 
-func C0IsUpperString(s string) bool {
+func C0IsUPPER(s string) bool {
 	runes := []rune(s)
 	if len(runes) > 0 {
 		return unicode.IsUpper(runes[0])
@@ -41,7 +41,7 @@ func SetDoubleQuotes(s string) string {
 	return "\"" + s + "\""
 }
 
-func AssertBooleanOK(v bool) bool {
+func AssertTRUE(v bool) bool {
 	if !v {
 		zaplog.ZAPS.P1.LOG.Panic("B IS FALSE")
 	}

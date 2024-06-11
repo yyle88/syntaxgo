@@ -19,8 +19,8 @@ import (
 // 因此在这个文件里，我定义了不同的设置包名的函数，因为这个确实是非常的重要
 func AddImportsOfPackages(source []byte, packages []string) []byte {
 	astFile := done.VCE(NewAstFromSource(source)).Nice()
-	utils.AssertBooleanOK(astFile.Package.IsValid()) //没有定义包名的不能使用该功能-即不能补充需要的引用
-	utils.AssertBooleanOK(astFile.Name != nil)       //没有定义包名的不能使用该功能-即不能补充需要的引用
+	utils.AssertTRUE(astFile.Package.IsValid()) //没有定义包名的不能使用该功能-即不能补充需要的引用
+	utils.AssertTRUE(astFile.Name != nil)       //没有定义包名的不能使用该功能-即不能补充需要的引用
 
 	// 把要导入的包设置为map
 	var missMap = make(map[string]bool)

@@ -306,7 +306,7 @@ func SeekFuncXRecvName(astFile *ast.File, recvName string, onlyExport bool) (res
 		case *ast.FuncDecl:
 			if IsFuncXRecvName(x, recvName) {
 				if onlyExport {
-					if !utils.C0IsUpperString(x.Name.Name) {
+					if !utils.C0IsUPPER(x.Name.Name) {
 						continue
 					}
 				}
@@ -338,7 +338,7 @@ func GetFunctionsXRecvName(astFunctions []*ast.FuncDecl, recvName string, onlyOu
 	for _, x := range astFunctions {
 		if IsFuncXRecvName(x, recvName) {
 			if onlyOut {
-				if !utils.C0IsUpperString(x.Name.Name) {
+				if !utils.C0IsUPPER(x.Name.Name) {
 					continue
 				}
 			}
