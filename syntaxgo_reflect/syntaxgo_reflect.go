@@ -16,9 +16,9 @@ func GetPkgPath(a any) string {
 	return reflect.TypeOf(a).PkgPath()
 }
 
-// GetPkgPathV2 就是 GetPkgPath 的范型版啦，因为最开始是没有范型的，而其后Go支持泛型
-// 认为非泛型版也是很有用的（当对象是从函数传过来的，而外部函数非泛型时，而外部函数非常底层没法逐级加泛型时，或者对象过多时，使用非范型版都是有优势的）
-// 因此保留非范型版而把范型版命名为V2，毕竟只添加两个字符就能解决问题，还能保证含义不变，V2也还行
+// GetPkgPathV2 就是 GetPkgPath 的泛型版啦，因为最开始是没有泛型的，而其后Go支持泛型
+// 认为非泛型版也是很有用的（当对象是从函数传过来的，而外部函数非泛型时，而外部函数非常底层没法逐级加泛型时，或者对象过多时，使用非泛型版都是有优势的）
+// 因此保留非泛型版而把泛型版命名为V2，毕竟只添加两个字符就能解决问题，还能保证含义不变，V2也还行
 func GetPkgPathV2[T any]() string {
 	return reflect.TypeOf(GetObject[T]()).PkgPath()
 }

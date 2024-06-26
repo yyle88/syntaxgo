@@ -5,6 +5,7 @@ import (
 	"go/parser"
 	"go/token"
 	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 
@@ -234,7 +235,7 @@ func NewAstPackagesXRootPath(rootPath string) map[string]*ast.Package {
 		token.NewFileSet(),
 		rootPath,
 		func(info os.FileInfo) bool {
-			return !info.IsDir() && strings.HasSuffix(info.Name(), ".go")
+			return (!info.IsDir()) && (filepath.Ext(info.Name()) == ".go")
 		},
 		parser.ParseComments,
 	)
