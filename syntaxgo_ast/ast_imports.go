@@ -129,3 +129,37 @@ func (param *PackageImportOptions) GetPkgPaths() []string {
 func AddImports(source []byte, param *PackageImportOptions) []byte {
 	return AddImportsOfPackages(source, param.GetPkgPaths())
 }
+
+func (param *PackageImportOptions) CreateImportSection() string {
+	return CreateImportSection(param.GetPkgPaths())
+}
+
+func CreateImportSection(imports []string) string {
+	if len(imports) == 0 {
+		zaplog.LOG.Debug("imports is none") // 逻辑依然向下执行，因为生成 import () 空内容也是可以的
+	}
+	var pkg2quotes []string
+	var ump = map[string]bool{}
+	for _, sub := range imports {
+		if sub == "" {
+			continue
+		}
+		if !strings.HasPrefix(sub, `"`) {
+			sub = `"` + sub
+		}
+		if !strings.HasSuffix(sub, `"`) {
+			sub = sub + `"`
+		}
+		if !ump[sub] {
+			ump[sub] = true
+			pkg2quotes = append(pkg2quotes, sub)
+		}
+	}
+	ptx := utils.NewPTX()
+	ptx.Println("import (")
+	for _, s := range pkg2quotes {
+		ptx.Println(s)
+	}
+	ptx.Println(")")
+	return ptx.String()
+}
