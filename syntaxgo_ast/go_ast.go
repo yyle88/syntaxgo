@@ -142,6 +142,28 @@ func SeekTypes(astFile *ast.File) (astTypes []*ast.TypeSpec) {
 	return astTypes
 }
 
+// SeekStructXName 查找结构体类型-返回的是结构体的{}里的内容(含括号)
+func SeekStructXName(astFile *ast.File, structName string) *ast.StructType {
+	for _, dec := range astFile.Decls {
+		switch x := dec.(type) {
+		case *ast.GenDecl:
+			for _, s := range x.Specs {
+				switch s := s.(type) {
+				case *ast.TypeSpec:
+					//在这里得到名称
+					if s.Name.Name == structName {
+						switch s := s.Type.(type) {
+						case *ast.StructType:
+							return s
+						}
+					}
+				}
+			}
+		}
+	}
+	return nil //在这里返回个空表示没有找到
+}
+
 // SeekMapStructNameTypes 查找所有的结构体类型-返回的是结构体名称和结构体的{}里的内容(含括号)
 func SeekMapStructNameTypes(astFile *ast.File) map[string]*ast.StructType {
 	astTypes := map[string]*ast.StructType{}

@@ -9,7 +9,7 @@ require (
 	github.com/yyle88/runpath v1.0.4
 	github.com/yyle88/zaplog v0.0.7
 	go.uber.org/zap v1.27.0
-	golang.org/x/tools v0.22.0
+	golang.org/x/tools v0.23.0
 )
 
 require (
