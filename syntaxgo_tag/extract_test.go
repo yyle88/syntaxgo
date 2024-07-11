@@ -33,3 +33,23 @@ func TestExtract(t *testing.T) {
 	t.Log(field)
 	require.Equal(t, "name", field)
 }
+
+func TestExtractTagValueIndex(t *testing.T) {
+	const tag = `gorm:"column:name; primaryKey;" json:"name"`
+
+	value, sdx, edx := ExtractTagValueIndex(tag, "gorm")
+	t.Log(value, sdx, edx)
+	require.Equal(t, "column:name; primaryKey;", value)
+	sub := tag[sdx:edx]
+	require.Equal(t, value, sub)
+}
+
+func TestExtractTagFieldIndex(t *testing.T) {
+	const tmp = "column:name; primaryKey;"
+
+	field, sdx, edx := ExtractTagFieldIndex(tmp, "column")
+	t.Log(field, sdx, edx)
+	require.Equal(t, "name", field)
+	sub := tmp[sdx:edx]
+	require.Equal(t, field, sub)
+}
