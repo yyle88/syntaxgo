@@ -17,9 +17,17 @@ func TestExtractTagValue(t *testing.T) {
 func TestExtractTagField(t *testing.T) {
 	const tmp = "column:name; primaryKey;"
 
-	field := ExtractTagField(tmp, "column")
+	field := ExtractTagField(tmp, "column", true)
 	t.Log(field)
 	require.Equal(t, "name", field)
+}
+
+func TestExtractTagField_2(t *testing.T) {
+	const tmp = "column: name; primaryKey;"
+
+	field := ExtractTagField(tmp, "column", false)
+	t.Log(field)
+	require.Equal(t, " name", field)
 }
 
 func TestExtract(t *testing.T) {
@@ -29,7 +37,7 @@ func TestExtract(t *testing.T) {
 	t.Log(value)
 	require.Equal(t, "column:name; primaryKey;", value)
 
-	field := ExtractTagField(value, "column")
+	field := ExtractTagField(value, "column", false)
 	t.Log(field)
 	require.Equal(t, "name", field)
 }
@@ -47,9 +55,19 @@ func TestExtractTagValueIndex(t *testing.T) {
 func TestExtractTagFieldIndex(t *testing.T) {
 	const tmp = "column:name; primaryKey;"
 
-	field, sdx, edx := ExtractTagFieldIndex(tmp, "column")
+	field, sdx, edx := ExtractTagFieldIndex(tmp, "column", true)
 	t.Log(field, sdx, edx)
 	require.Equal(t, "name", field)
+	sub := tmp[sdx:edx]
+	require.Equal(t, field, sub)
+}
+
+func TestExtractTagFieldIndex_2(t *testing.T) {
+	const tmp = "column: name; primaryKey;"
+
+	field, sdx, edx := ExtractTagFieldIndex(tmp, "column", false)
+	t.Log(field, sdx, edx)
+	require.Equal(t, " name", field)
 	sub := tmp[sdx:edx]
 	require.Equal(t, field, sub)
 }
