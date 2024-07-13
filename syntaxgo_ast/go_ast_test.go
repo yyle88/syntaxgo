@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"github.com/yyle88/done"
 	"github.com/yyle88/runpath/runtestpath"
 )
 
@@ -14,7 +15,7 @@ func TestNewAstXFilepath(t *testing.T) {
 	path := runtestpath.SrcPath(t)
 	astFile, err := NewAstXFilepath(path)
 	require.NoError(t, err)
-	_ = ast.Print(token.NewFileSet(), astFile)
+	done.Done(ast.Print(token.NewFileSet(), astFile))
 }
 
 func TestSeekFuncXName(t *testing.T) {

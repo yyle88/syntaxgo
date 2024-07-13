@@ -47,6 +47,16 @@ func GetTypeNameV2[T any]() string {
 	return GetTypeName(GetObject[T]())
 }
 
+// GetTypeNameV3 获取类型名称，由于有的时候会传对象而有的时候会传指针，因此这里做个简单的适配
+func GetTypeNameV3(object any) string {
+	if vtp := reflect.TypeOf(object); vtp.Kind() == reflect.Ptr {
+		// Elem() panics if the type's Kind is not Array, Chan, Map, Pointer, or Slice.
+		return vtp.Elem().Name()
+	} else {
+		return vtp.Name()
+	}
+}
+
 // GetTypeUsageCode 获取在其它包调用某包类型的代码，比如包名是 abc 而类型名是 Demo 则在其它包调用时就是 abc.Demo 这样的，因此这个操作也是非常重要的
 func GetTypeUsageCode(a any) string {
 	objectType := reflect.TypeOf(a)
