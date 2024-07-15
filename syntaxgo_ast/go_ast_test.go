@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"go/ast"
 	"go/token"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 	"github.com/yyle88/done"
+	"github.com/yyle88/runpath"
 	"github.com/yyle88/runpath/runtestpath"
 )
 
@@ -30,4 +32,26 @@ func TestSeekFuncXName(t *testing.T) {
 		fmt.Println(s.Text)
 		fmt.Println("-----", "-", "-----")
 	}
+}
+
+type Example struct {
+	Name string
+}
+
+type Examples []*Example
+
+func TestSeekArrayXName(t *testing.T) {
+	examples := make(Examples, 0, 3)
+	examples = append(examples, &Example{Name: "a"})
+	examples = append(examples, &Example{Name: "b"})
+	examples = append(examples, &Example{Name: "c"})
+	t.Log(examples)
+
+	path := runpath.Current()
+	srcData := done.VAE(os.ReadFile(path)).Nice()
+	astFile, err := NewAstFromSource(srcData)
+	require.NoError(t, err)
+	astFunc := SeekArrayXName(astFile, "Examples")
+	require.NotNil(t, astFunc)
+	t.Log(GetNodeCode(srcData, astFunc))
 }
