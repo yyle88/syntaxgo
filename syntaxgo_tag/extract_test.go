@@ -17,7 +17,7 @@ func TestExtractTagValue(t *testing.T) {
 func TestExtractTagField(t *testing.T) {
 	const tmp = "column:name; primaryKey;"
 
-	field := ExtractTagField(tmp, "column", true)
+	field := ExtractTagField(tmp, "column", EXCLUDE_WHITESPACE_PREFIX)
 	t.Log(field)
 	require.Equal(t, "name", field)
 }
@@ -25,7 +25,7 @@ func TestExtractTagField(t *testing.T) {
 func TestExtractTagField_2(t *testing.T) {
 	const tmp = "column: name; primaryKey;"
 
-	field := ExtractTagField(tmp, "column", false)
+	field := ExtractTagField(tmp, "column", INCLUDE_WHITESPACE_PREFIX)
 	t.Log(field)
 	require.Equal(t, " name", field)
 }
@@ -37,7 +37,7 @@ func TestExtract(t *testing.T) {
 	t.Log(value)
 	require.Equal(t, "column:name; primaryKey;", value)
 
-	field := ExtractTagField(value, "column", false)
+	field := ExtractTagField(value, "column", INCLUDE_WHITESPACE_PREFIX)
 	t.Log(field)
 	require.Equal(t, "name", field)
 }
@@ -55,7 +55,7 @@ func TestExtractTagValueIndex(t *testing.T) {
 func TestExtractTagFieldIndex(t *testing.T) {
 	const tmp = "column:name; primaryKey;"
 
-	field, sdx, edx := ExtractTagFieldIndex(tmp, "column", true)
+	field, sdx, edx := ExtractTagFieldIndex(tmp, "column", EXCLUDE_WHITESPACE_PREFIX)
 	t.Log(field, sdx, edx)
 	require.Equal(t, "name", field)
 	sub := tmp[sdx:edx]
@@ -65,7 +65,7 @@ func TestExtractTagFieldIndex(t *testing.T) {
 func TestExtractTagFieldIndex_2(t *testing.T) {
 	const tmp = "column: name; primaryKey;"
 
-	field, sdx, edx := ExtractTagFieldIndex(tmp, "column", false)
+	field, sdx, edx := ExtractTagFieldIndex(tmp, "column", INCLUDE_WHITESPACE_PREFIX)
 	t.Log(field, sdx, edx)
 	require.Equal(t, " name", field)
 	sub := tmp[sdx:edx]
