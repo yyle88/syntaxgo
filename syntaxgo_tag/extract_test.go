@@ -71,3 +71,83 @@ func TestExtractTagFieldIndex_2(t *testing.T) {
 	sub := tmp[sdx:edx]
 	require.Equal(t, field, sub)
 }
+
+func TestExtractNoValueTagFieldNameIndex(t *testing.T) {
+	const tmp = "column:name;index;"
+
+	sdx, edx := ExtractNoValueTagFieldNameIndex(tmp, "index")
+	t.Log(sdx, edx)
+	require.Equal(t, "index", tmp[sdx:edx])
+}
+
+func TestExtractNoValueTagFieldNameIndex_2(t *testing.T) {
+	const tmp = "column:name;index:abc;"
+
+	sdx, edx := ExtractNoValueTagFieldNameIndex(tmp, "index")
+	require.Equal(t, -1, sdx)
+	require.Equal(t, -1, edx)
+}
+
+func TestExtractNoValueTagFieldNameIndex_3(t *testing.T) {
+	const tmp = "column:name;index;field2"
+
+	sdx, edx := ExtractNoValueTagFieldNameIndex(tmp, "index")
+	t.Log(sdx, edx)
+	require.Equal(t, "index", tmp[sdx:edx])
+}
+
+func TestExtractNoValueTagFieldNameIndex_4(t *testing.T) {
+	const tmp = "column:name;index:value;field2"
+
+	sdx, edx := ExtractNoValueTagFieldNameIndex(tmp, "index")
+	require.Equal(t, -1, sdx)
+	require.Equal(t, -1, edx)
+}
+
+func TestExtractNoValueTagFieldNameIndex_5(t *testing.T) {
+	const tmp = "column:name; index;field2"
+
+	sdx, edx := ExtractNoValueTagFieldNameIndex(tmp, "index")
+	t.Log(sdx, edx)
+	require.Equal(t, "index", tmp[sdx:edx])
+}
+
+func TestExtractNoValueTagFieldNameIndex_6(t *testing.T) {
+	const tmp = "column:name;index;field2"
+
+	sdx, edx := ExtractNoValueTagFieldNameIndex(tmp, "field2")
+	t.Log(sdx, edx)
+	require.Equal(t, "field2", tmp[sdx:edx])
+}
+
+func TestExtractNoValueTagFieldNameIndex_7(t *testing.T) {
+	const tmp = "column:name;index;field2;"
+
+	sdx, edx := ExtractNoValueTagFieldNameIndex(tmp, "field2")
+	t.Log(sdx, edx)
+	require.Equal(t, "field2", tmp[sdx:edx])
+}
+
+func TestExtractNoValueTagFieldNameIndex_8(t *testing.T) {
+	const tmp = "column:name;index;field2:value;"
+
+	sdx, edx := ExtractNoValueTagFieldNameIndex(tmp, "field2")
+	require.Equal(t, -1, sdx)
+	require.Equal(t, -1, edx)
+}
+
+func TestExtractNoValueTagFieldNameIndex_9(t *testing.T) {
+	const tmp = "column:name;index;field2: value;"
+
+	sdx, edx := ExtractNoValueTagFieldNameIndex(tmp, "field2")
+	require.Equal(t, -1, sdx)
+	require.Equal(t, -1, edx)
+}
+
+func TestExtractNoValueTagFieldNameIndex_10(t *testing.T) {
+	const tmp = "column:name;index :value;field2"
+
+	sdx, edx := ExtractNoValueTagFieldNameIndex(tmp, "index")
+	require.Equal(t, -1, sdx)
+	require.Equal(t, -1, edx)
+}

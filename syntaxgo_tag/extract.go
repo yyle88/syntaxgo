@@ -1,6 +1,7 @@
 package syntaxgo_tag
 
 import (
+	"fmt"
 	"regexp"
 
 	"github.com/pkg/errors"
@@ -78,4 +79,15 @@ func ExtractTagFieldIndex(part, fieldName string, action ExtractTagFieldAction) 
 		return sub, sdx, ex
 	}
 	return "", -1, -1
+}
+
+func ExtractNoValueTagFieldNameIndex(part, fieldName string) (sdx, edx int) {
+	re := regexp.MustCompile(fmt.Sprintf(`\b(%s)\b(?:;|$)`, fieldName))
+
+	// 查找匹配的位置
+	matches := re.FindStringSubmatchIndex(part)
+	if len(matches) > 3 {
+		return matches[2], matches[3]
+	}
+	return -1, -1
 }
