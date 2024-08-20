@@ -23,6 +23,10 @@ func GetPkgPathV2[T any]() string {
 	return reflect.TypeOf(GetObject[T]()).PkgPath()
 }
 
+func GetPkgPathV3(a any) string {
+	return GetTypeV3(a).PkgPath()
+}
+
 func GetPkgName(a any) string {
 	var pkgPath = GetPkgPath(a)
 	if pkgPath == "" {
@@ -35,8 +39,35 @@ func GetPkgNameV2[T any]() string {
 	return GetPkgName(GetObject[T]())
 }
 
+func GetPkgNameV3(a any) string {
+	var pkgPath = GetPkgPathV3(a)
+	if pkgPath == "" {
+		return ""
+	}
+	return filepath.Base(pkgPath)
+}
+
+// GetObject 能够在编译阶段预防T是指针类型（比如*A）的情况
 func GetObject[T any]() (a T) {
-	return a //TODO 目前暂时不知道如何在编译阶段就能阻止类型传指针，即"[*A]"这样的，因为通过指针对象得不到类型
+	return a
+}
+
+func GetType(a any) reflect.Type {
+	return reflect.TypeOf(a)
+}
+
+func GetTypeV2[T any]() reflect.Type {
+	return GetType(GetObject[T]())
+}
+
+// GetTypeV3 获取类型信息，由于有的时候会传对象而有的时候会传指针，因此这里做个简单的适配
+func GetTypeV3(object any) reflect.Type {
+	if vtp := reflect.TypeOf(object); vtp.Kind() == reflect.Ptr {
+		// Elem() panics if the type's Kind is not Array, Chan, Map, Pointer, or Slice.
+		return vtp.Elem()
+	} else {
+		return vtp
+	}
 }
 
 func GetTypeName(a any) string {
@@ -49,12 +80,7 @@ func GetTypeNameV2[T any]() string {
 
 // GetTypeNameV3 获取类型名称，由于有的时候会传对象而有的时候会传指针，因此这里做个简单的适配
 func GetTypeNameV3(object any) string {
-	if vtp := reflect.TypeOf(object); vtp.Kind() == reflect.Ptr {
-		// Elem() panics if the type's Kind is not Array, Chan, Map, Pointer, or Slice.
-		return vtp.Elem().Name()
-	} else {
-		return vtp.Name()
-	}
+	return GetTypeV3(object).Name()
 }
 
 // GetTypeUsageCode 获取在其它包调用某包类型的代码，比如包名是 abc 而类型名是 Demo 则在其它包调用时就是 abc.Demo 这样的，因此这个操作也是非常重要的
