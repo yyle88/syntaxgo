@@ -5,7 +5,7 @@ go 1.22.3
 require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.9.0
-	github.com/yyle88/done v1.0.5
+	github.com/yyle88/done v1.0.7
 	github.com/yyle88/runpath v1.0.4
 	github.com/yyle88/zaplog v0.0.7
 	go.uber.org/zap v1.27.0
