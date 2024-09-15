@@ -47,7 +47,7 @@ func TestSeekArrayXName(t *testing.T) {
 	examples = append(examples, &Example{Name: "c"})
 	t.Log(examples)
 
-	path := runpath.Current()
+	path := runpath.CurrentPath()
 	srcData := done.VAE(os.ReadFile(path)).Nice()
 	astFile, err := NewAstFromSource(srcData)
 	require.NoError(t, err)
