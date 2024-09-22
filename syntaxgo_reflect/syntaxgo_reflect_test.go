@@ -73,16 +73,10 @@ func TestGetTypeNameV2(t *testing.T) {
 	require.Equal(t, "Example", typeName)
 }
 
-func TestGetTypeUsageCode(t *testing.T) {
-	usageCode := GetTypeUsageCode(Example{})
-	t.Log(usageCode)
-	require.Equal(t, "syntaxgo_reflect.Example", usageCode)
-}
-
-func TestGetTypeUsageCodeV2(t *testing.T) {
-	usageCode := GetTypeUsageCodeV2[Example]()
-	t.Log(usageCode)
-	require.Equal(t, "syntaxgo_reflect.Example", usageCode)
+func TestGetTypeNameV3(t *testing.T) {
+	typeName := GetTypeNameV3(&Example{})
+	t.Log(typeName)
+	require.Equal(t, "Example", typeName)
 }
 
 func TestGetPkgPathV2(t *testing.T) {
@@ -93,14 +87,10 @@ func TestGetPkgPathV2(t *testing.T) {
 	t.Log(GetPkgNameV2[*Example]()) //这个是不行的，目前不支持往里面传指针类型，但并不会panic而是返回空白
 }
 
-func TestGetPkgPaths(t *testing.T) {
-	objectsTypes := GetObjectsTypes([]any{Example{}, ExampleOneOne{}, ExampleTwoTwo{}})
-	pkgPaths := GetPkgPaths(objectsTypes)
-	t.Log(pkgPaths)
-}
+func TestGetPkgNameV3(t *testing.T) {
+	t.Log(GetPkgPathV3(Example{}))
+	t.Log(GetPkgNameV3(Example{}))
 
-func TestGetPkgPaths4Imports(t *testing.T) {
-	objectsTypes := GetObjectsTypes([]any{Example{}, ExampleOneOne{}, ExampleTwoTwo{}})
-	pkgPaths := GetPkgPaths4Imports(objectsTypes)
-	t.Log(pkgPaths)
+	t.Log(GetPkgPathV3(&Example{}))
+	t.Log(GetPkgNameV3(&Example{}))
 }

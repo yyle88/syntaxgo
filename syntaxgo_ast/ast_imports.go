@@ -13,6 +13,11 @@ import (
 	"go.uber.org/zap"
 )
 
+// SetImportsOfPackages 把需要引用的包路径追加到代码里
+func SetImportsOfPackages(source []byte, packages []string) []byte {
+	return AddImportsOfPackages(source, packages)
+}
+
 // AddImportsOfPackages 把需要引用的包路径增加到代码里
 // 这个函数非常重要，因为有时候就是找不到包名，而有时候有重复的包名，比如"errors"和"github.com/pkg/errors"，而即使是有唯一的包，让代码自动去格式化和找就会非常的耗时
 // 因此推荐就是在生成代码时同时也把要引用的都添加进来，这样代码格式化就会非常快
@@ -121,8 +126,13 @@ func (param *PackageImportOptions) GetPkgPaths() []string {
 	return utils.SafeMerge(
 		param.Packages,
 		syntaxgo_reflect.GetPkgPaths(param.UsingTypes),
-		syntaxgo_reflect.GetPkgPaths(syntaxgo_reflect.GetObjectsTypes(param.Objects)),
+		syntaxgo_reflect.GetPkgPaths(syntaxgo_reflect.GetTypes(param.Objects)),
 	)
+}
+
+// SetImports 把涉及到的 pkg path 设置到 source 里面，追加 import 内容，返回修改后的代码
+func SetImports(source []byte, param *PackageImportOptions) []byte {
+	return AddImports(source, param)
 }
 
 // AddImports 根据要使用的类型，得到要引用的包路径，把要引用的包设置到代码里，返回修改后的代码

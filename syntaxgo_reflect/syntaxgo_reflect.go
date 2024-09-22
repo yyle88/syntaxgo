@@ -3,8 +3,6 @@ package syntaxgo_reflect
 import (
 	"path/filepath"
 	"reflect"
-
-	"github.com/yyle88/done"
 )
 
 // GetPkgPath 在 Go 语言中，通过反射是无法直接获取函数的包名的。
@@ -47,11 +45,6 @@ func GetPkgNameV3(a any) string {
 	return filepath.Base(pkgPath)
 }
 
-// GetObject 能够在编译阶段预防T是指针类型（比如*A）的情况
-func GetObject[T any]() (a T) {
-	return a
-}
-
 func GetType(a any) reflect.Type {
 	return reflect.TypeOf(a)
 }
@@ -81,50 +74,4 @@ func GetTypeNameV2[T any]() string {
 // GetTypeNameV3 获取类型名称，由于有的时候会传对象而有的时候会传指针，因此这里做个简单的适配
 func GetTypeNameV3(object any) string {
 	return GetTypeV3(object).Name()
-}
-
-// GetTypeUsageCode 获取在其它包调用某包类型的代码，比如包名是 abc 而类型名是 Demo 则在其它包调用时就是 abc.Demo 这样的，因此这个操作也是非常重要的
-func GetTypeUsageCode(a any) string {
-	objectType := reflect.TypeOf(a)
-	goTypeName := objectType.Name()
-	if pkgPath := objectType.PkgPath(); pkgPath != "" {
-		pkgName := filepath.Base(pkgPath)
-		return pkgName + "." + goTypeName
-	} else {
-		return goTypeName
-	}
-}
-
-func GetTypeUsageCodeV2[T any]() string {
-	return GetTypeUsageCode(GetObject[T]())
-}
-
-func GetObjectsTypes(objects []any) []reflect.Type {
-	var objectsTypes = make([]reflect.Type, 0, len(objects))
-	for _, a := range objects {
-		objectsTypes = append(objectsTypes, done.Nice(reflect.TypeOf(a)))
-	}
-	return objectsTypes
-}
-
-func GetPkgPaths(objectsTypes []reflect.Type) []string {
-	var packagePaths = make([]string, 0, len(objectsTypes))
-	for _, a := range objectsTypes {
-		packagePaths = append(packagePaths, done.Nice(a.PkgPath()))
-	}
-	return packagePaths
-}
-
-// GetPkgPaths4Imports 就是根据类型获取到需要引用(import)的包的路径，因为import需要带双引号，这里就写个逻辑给它加上双引号吧
-// 这个功能还挺常用的，特别是在自动生成代码的时候，假如不能补全import的包，在某些场景里执行代码format就会很慢（比如某些IDE或者某些自动格式化的程序的自动格式化就会很慢）
-// 很明显这里的 "4" 就是 "For" 的意思，但我认为写个 "4" 会更加洋气些
-// 目前知道的获取包名最好的方案就是通过对象，其次才是通过硬编码字符串，因此这个函数十分滴珍贵，需要好好利用起来
-func GetPkgPaths4Imports(objectsTypes []reflect.Type) []string {
-	var packagePaths = GetPkgPaths(objectsTypes)
-
-	var results = make([]string, 0, len(packagePaths))
-	for _, path := range packagePaths {
-		results = append(results, `"`+path+`"`)
-	}
-	return results
 }
