@@ -2,8 +2,6 @@ package utils
 
 import (
 	"unicode"
-
-	"github.com/yyle88/zaplog"
 )
 
 func SetPrefixToStrings(prefix string, a []string) (results []string) {
@@ -39,13 +37,6 @@ func C0IsUPPER(s string) bool {
 
 func SetDoubleQuotes(s string) string {
 	return "\"" + s + "\""
-}
-
-func AssertTRUE(v bool) bool {
-	if !v {
-		zaplog.ZAPS.P1.LOG.Panic("B IS FALSE")
-	}
-	return v
 }
 
 func GetMapKeys[K comparable, V any](m map[K]V) (ks []K) {
