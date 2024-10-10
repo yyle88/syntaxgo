@@ -6,6 +6,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.9.0
 	github.com/yyle88/done v1.0.11
+	github.com/yyle88/erero v1.0.11
 	github.com/yyle88/must v0.0.3
 	github.com/yyle88/runpath v1.0.9
 	github.com/yyle88/zaplog v0.0.11
