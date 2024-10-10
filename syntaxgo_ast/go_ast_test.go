@@ -55,3 +55,15 @@ func TestSeekArrayXName(t *testing.T) {
 	require.NotNil(t, astFunc)
 	t.Log(GetNodeCode(srcData, astFunc))
 }
+
+func TestNewAstPackagesXRootPath(t *testing.T) {
+	packsMap, err := NewAstPackagesXRootPath(runpath.PARENT.Path())
+	require.NoError(t, err)
+	t.Log(packsMap)
+}
+
+func TestMergeAstFilesXRootPath(t *testing.T) {
+	astFile, err := MergeAstFilesXRootPath(runpath.PARENT.Path())
+	require.NoError(t, err)
+	done.Done(ast.Print(token.NewFileSet(), astFile))
+}
