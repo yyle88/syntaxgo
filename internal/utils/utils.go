@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"os"
+	"path/filepath"
 	"unicode"
 )
 
@@ -44,4 +46,8 @@ func GetMapKeys[K comparable, V any](m map[K]V) (ks []K) {
 		ks = append(ks, k)
 	}
 	return ks //返回默认值比如0或者空字符串等
+}
+
+func IsFileIsGoFile(info os.FileInfo) bool {
+	return (!info.IsDir()) && (filepath.Ext(info.Name()) == ".go")
 }
