@@ -1,4 +1,4 @@
-package syntaxgo_astfieldsflat
+package syntaxgo_astvtnorm
 
 import "go/ast"
 

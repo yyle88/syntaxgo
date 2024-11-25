@@ -4,12 +4,13 @@ go 1.22.8
 
 require (
 	github.com/pkg/errors v0.9.1
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	github.com/yyle88/done v1.0.17
 	github.com/yyle88/erero v1.0.12
 	github.com/yyle88/must v0.0.6
 	github.com/yyle88/printgo v1.0.0
-	github.com/yyle88/runpath v1.0.10
+	github.com/yyle88/runpath v1.0.21
+	github.com/yyle88/tern v0.0.3
 	github.com/yyle88/zaplog v0.0.14
 	go.uber.org/zap v1.27.0
 	golang.org/x/tools v0.27.0
