@@ -9,43 +9,98 @@ import (
 	"github.com/yyle88/syntaxgo/internal/utils"
 )
 
-// Deprecated: 需要把逻辑改改不要使用不推荐的包，而且目前看来这个函数几乎没有用途
-// MergeAstFilesXRootPath 得到目录中唯一包的语法内容
-// 这个函数的命名很差
-func MergeAstFilesXRootPath(root string) (*AstBundle, error) {
-	fileSet := token.NewFileSet()
-	packsMap, err := NewAstPackagesXRootPath(fileSet, root)
+/*
+Package `syntaxgo_ast` provides tools for working with Go source code Abstract Syntax Trees (AST). This file primarily defines functions for parsing Go packages within a directory and merging their files into a single `AstBundle` instance.
+
+Key features include:
+  - Parsing all Go packages in a directory and generating a mapping with package information.
+  - Merging all files of a specified package into a single AST, supporting operations for a single package or subpackages.
+  - Providing convenient interfaces to handle collections of Go files in a directory/package.
+
+It is important to note that some of the logic in this file relies on the deprecated `ast.Package` type and related methods (such as `ast.MergePackageFiles`). This means that future versions of Go may remove these features, and therefore, gradual refactoring is needed to accommodate newer versions.
+*/
+
+/*
+Package `syntaxgo_ast` 提供了处理 Go 源代码语法树 (AST) 的工具。当前文件主要定义了一些函数，用于解析目录中的 Go 包，将其中的文件合并为一个 `AstBundle` 实例。
+
+主要功能包括：
+  - 解析目录下的所有 Go 包，生成包含包信息的映射。
+  - 合并指定包的所有文件为一个语法树，既支持单一包也支持选择子包的操作。
+  - 提供便捷接口以处理目录下的 Go 文件集合。
+
+需要注意的是，本文件的部分逻辑使用了已被标记为过时的 `ast.Package` 类型以及相关方法（例如 `ast.MergePackageFiles`）。这意味着未来的 Go 版本可能会移除这些功能，因此需要逐步重构以适应新版本。
+*/
+
+// MergeOnePackageFiles merges all Go source files of a specific package within a given directory.
+// MergeOnePackageFiles 合并指定目录下某个包的所有 Go 源文件，生成一个语法树。
+// Deprecated: This function uses the deprecated `ast.Package` and `ast.MergePackageFiles` methods.
+// Note: This has limited usefulness and may need refactoring in the future.
+func MergeOnePackageFiles(root string, packageName string) (*AstBundle, error) {
+	var fileSet = token.NewFileSet()
+	// Parse the directory and retrieve a map of package names to package information.
+	// 解析目录，获取包名到包信息的映射。
+	packagesMap, err := ParseRootGetPackages(fileSet, root)
 	if err != nil {
 		return nil, erero.Wro(err)
 	}
-	if len(packsMap) >= 2 {
-		return nil, erero.Errorf("more than one package in root path: %s", root)
+
+	// Check if the specified package name exists in the parsed data.
+	// 检查解析结果中是否存在指定的包名。
+	pkg, ok := packagesMap[packageName]
+	if !ok {
+		return nil, erero.Errorf("no package name = %s in root path: %s", packageName, root)
 	}
-	for _, pkg := range packsMap {
-		//这样处理意味着只会返回 map 中的第一个包，并且只合并该包中的文件。如果目录中存在多个包，它们将不会被处理。
-		//这种设计可能基于假设：你所处理的目录下只会包含一个 Go 包。
-		//也就是说，开发者假定根目录下的 Go 文件都属于同一个包，或者只关心第一个包的内容。
-		return NewAstBundle(
-			fileSet,
-			ast.MergePackageFiles(pkg, ast.FilterImportDuplicates),
-		), nil
-	}
-	return nil, erero.Errorf("no packages in root path: %s", root)
+
+	// Merge the package files into a single AST bundle.
+	// 将该包的所有文件合并为单一语法树。
+	res := NewAstBundle(fileSet, ast.MergePackageFiles(pkg, ast.FilterImportDuplicates))
+	return res, nil
 }
 
-// Deprecated: 这里暂不知道该怎么修改，但是继续增加个这样的标识，就能在lint时不报错，估计是传导出去啦
-// ast.Package has been deprecated
-// NewAstPackagesXRootPath 得到整个目录下各个包的语法内容
-// 这个函数的命名很差
-func NewAstPackagesXRootPath(fset *token.FileSet, root string) (map[string]*ast.Package, error) {
-	packsMap, err := parser.ParseDir(
+// ParseRootGetPackages parses the entire directory and retrieves a map of package names to package information.
+// ParseRootGetPackages 解析指定目录下的所有 Go 包，返回包名到包信息的映射。
+// Deprecated: This function uses the deprecated `ast.Package` type and should be updated in the future.
+// Note: The function name could be more descriptive of its purpose.
+func ParseRootGetPackages(fset *token.FileSet, root string) (map[string]*ast.Package, error) {
+	packagesMap, err := parser.ParseDir(
 		fset,
 		root,
-		utils.IsGoSourceFile,
+		utils.IsGoSourceFile, // Filters to include only Go source files.
 		parser.ParseComments,
 	)
 	if err != nil {
 		return nil, erero.Wro(err)
 	}
-	return packsMap, nil
+	return packagesMap, nil
+}
+
+// MergeSubPackageFiles merges all Go source files of the only package in the given directory.
+// If there is more than one package, it returns an error.
+// MergeSubPackageFiles 合并指定目录下唯一包的所有 Go 源文件，若目录中存在多个包则返回错误。
+// Deprecated: This function uses the deprecated `ast.Package` type and `ast.MergePackageFiles` method.
+func MergeSubPackageFiles(root string) (*AstBundle, error) {
+	var fileSet = token.NewFileSet()
+	// Parse the directory and retrieve a map of package names to package information.
+	// 解析目录，获取包名到包信息的映射。
+	packagesMap, err := ParseRootGetPackages(fileSet, root)
+	if err != nil {
+		return nil, erero.Wro(err)
+	}
+
+	// If multiple packages are found, return an error.
+	// 如果目录中存在多个包，则返回错误。
+	if len(packagesMap) >= 2 {
+		return nil, erero.Errorf("more than one package in root path: %s", root)
+	}
+
+	// Iterate over the map and merge the first package's files into a single AST bundle.
+	// 遍历映射，将第一个包的所有文件合并为单一语法树。
+	for _, pkg := range packagesMap {
+		res := NewAstBundle(fileSet, ast.MergePackageFiles(pkg, ast.FilterImportDuplicates))
+		return res, nil
+	}
+
+	// If no packages are found, return an error.
+	// 如果没有找到任何包，则返回错误。
+	return nil, erero.Errorf("no packages in root path: %s", root)
 }

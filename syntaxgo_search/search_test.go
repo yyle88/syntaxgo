@@ -1,4 +1,4 @@
-package syntaxgo_ast
+package syntaxgo_search
 
 import (
 	"fmt"
@@ -11,20 +11,24 @@ import (
 	"github.com/yyle88/rese"
 	"github.com/yyle88/runpath"
 	"github.com/yyle88/runpath/runtestpath"
+	"github.com/yyle88/syntaxgo/syntaxgo_ast"
 	"github.com/yyle88/syntaxgo/syntaxgo_astnode"
 )
 
 func TestAstBundle_Print_Search(t *testing.T) {
 	path := runtestpath.SrcPath(t)
-	astBundle, err := NewAstBundleV3(token.NewFileSet(), path)
+	astBundle, err := syntaxgo_ast.NewAstBundleV3(token.NewFileSet(), path)
 	require.NoError(t, err)
 	done.Done(astBundle.Print())
 }
 
-func TestSeekFuncXName(t *testing.T) {
+func TestFindFunctionByName(t *testing.T) {
 	path := runtestpath.SrcPath(t)
-	astBundle := rese.P1(NewAstBundleV3(token.NewFileSet(), path))
-	astFunc := SeekFuncXName(astBundle.file, "NewAstXFilepath")
+	astBundle := rese.P1(syntaxgo_ast.NewAstBundleV3(token.NewFileSet(), path))
+
+	astFile, _ := astBundle.GetBundle()
+
+	astFunc := FindFunctionByName(astFile, "FindFunctionByName")
 	if astFunc == nil {
 		return
 	}
@@ -41,7 +45,7 @@ type Example struct {
 
 type Examples []*Example
 
-func TestSeekArrayXName(t *testing.T) {
+func TestFindArrayTypeByName(t *testing.T) {
 	examples := make(Examples, 0, 3)
 	examples = append(examples, &Example{Name: "a"})
 	examples = append(examples, &Example{Name: "b"})
@@ -50,8 +54,11 @@ func TestSeekArrayXName(t *testing.T) {
 
 	path := runpath.CurrentPath()
 	srcData := done.VAE(os.ReadFile(path)).Nice()
-	astBundle := rese.P1(NewAstBundleV2(token.NewFileSet(), srcData))
-	astFunc := SeekArrayXName(astBundle.file, "Examples")
+	astBundle := rese.P1(syntaxgo_ast.NewAstBundleV2(token.NewFileSet(), srcData))
+
+	astFile, _ := astBundle.GetBundle()
+
+	astFunc := FindArrayTypeByName(astFile, "Examples")
 	require.NotNil(t, astFunc)
 	t.Log(string(syntaxgo_astnode.GetCode(srcData, astFunc)))
 }

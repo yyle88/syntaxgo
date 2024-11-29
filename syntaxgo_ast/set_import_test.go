@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAddImportsOfPackages(t *testing.T) {
+func TestInjectImports(t *testing.T) {
 	const code = `package main
 
 	import "time"
