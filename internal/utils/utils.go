@@ -6,7 +6,7 @@ import (
 	"unicode"
 )
 
-func SetPrefixToStrings(prefix string, a []string) (results []string) {
+func SetPrefix2Strings(prefix string, a []string) (results []string) {
 	results = make([]string, 0, len(a))
 	for _, v := range a {
 		results = append(results, prefix+v)
@@ -29,7 +29,7 @@ func SumLength[V any](a ...[]V) (n int) {
 	return n
 }
 
-func C0IsUPPER(s string) bool {
+func C0IsUppercase(s string) bool {
 	runes := []rune(s)
 	if len(runes) > 0 {
 		return unicode.IsUpper(runes[0])
@@ -41,13 +41,6 @@ func SetDoubleQuotes(s string) string {
 	return "\"" + s + "\""
 }
 
-func GetMapKeys[K comparable, V any](m map[K]V) (ks []K) {
-	for k := range m {
-		ks = append(ks, k)
-	}
-	return ks //返回默认值比如0或者空字符串等
-}
-
-func IsFileIsGoFile(info os.FileInfo) bool {
+func IsGoSourceFile(info os.FileInfo) bool {
 	return (!info.IsDir()) && (filepath.Ext(info.Name()) == ".go")
 }

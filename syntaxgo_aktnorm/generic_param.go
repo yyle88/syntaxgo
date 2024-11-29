@@ -1,4 +1,4 @@
-package syntaxgo_astvtnorm
+package syntaxgo_aktnorm
 
 import "go/ast"
 

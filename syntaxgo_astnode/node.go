@@ -1,4 +1,4 @@
-package syntaxgo_ast
+package syntaxgo_astnode
 
 import (
 	"go/ast"
@@ -14,8 +14,11 @@ func NewNode(pos, end token.Pos) *Node {
 	return &Node{pos: pos, end: end}
 }
 
-func NewNodeFromNode(node ast.Node) *Node {
+func NewNodeV1(node ast.Node) *Node {
 	return NewNode(node.Pos(), node.End())
+}
+func NewNodeV2(pos, end int) *Node {
+	return NewNode(token.Pos(pos), token.Pos(end))
 }
 
 func (x *Node) Pos() token.Pos {
@@ -26,10 +29,10 @@ func (x *Node) End() token.Pos {
 	return x.end
 }
 
-func (x *Node) GetNode(source []byte) []byte {
+func (x *Node) GetCode(source []byte) []byte {
 	return source[x.Pos()-1 : x.End()-1]
 }
 
-func (x *Node) GetCode(source []byte) string {
+func (x *Node) GetText(source []byte) string {
 	return string(source[x.Pos()-1 : x.End()-1])
 }

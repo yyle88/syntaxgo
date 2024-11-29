@@ -2,28 +2,29 @@ package syntaxgo_ast
 
 import (
 	"fmt"
-	"go/ast"
 	"go/token"
 	"os"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 	"github.com/yyle88/done"
+	"github.com/yyle88/rese"
 	"github.com/yyle88/runpath"
 	"github.com/yyle88/runpath/runtestpath"
+	"github.com/yyle88/syntaxgo/syntaxgo_astnode"
 )
 
-func TestNewAstXFilepath(t *testing.T) {
+func TestAstBundle_Print_Search(t *testing.T) {
 	path := runtestpath.SrcPath(t)
-	astFile, err := NewAstXFilepath(path)
+	astBundle, err := NewAstBundleV3(token.NewFileSet(), path)
 	require.NoError(t, err)
-	done.Done(ast.Print(token.NewFileSet(), astFile))
+	done.Done(astBundle.Print())
 }
 
 func TestSeekFuncXName(t *testing.T) {
 	path := runtestpath.SrcPath(t)
-	astFile, _ := NewAstXFilepath(path)
-	astFunc := SeekFuncXName(astFile, "NewAstXFilepath")
+	astBundle := rese.P1(NewAstBundleV3(token.NewFileSet(), path))
+	astFunc := SeekFuncXName(astBundle.file, "NewAstXFilepath")
 	if astFunc == nil {
 		return
 	}
@@ -49,21 +50,8 @@ func TestSeekArrayXName(t *testing.T) {
 
 	path := runpath.CurrentPath()
 	srcData := done.VAE(os.ReadFile(path)).Nice()
-	astFile, err := NewAstFromSource(srcData)
-	require.NoError(t, err)
-	astFunc := SeekArrayXName(astFile, "Examples")
+	astBundle := rese.P1(NewAstBundleV2(token.NewFileSet(), srcData))
+	astFunc := SeekArrayXName(astBundle.file, "Examples")
 	require.NotNil(t, astFunc)
-	t.Log(GetNodeCode(srcData, astFunc))
-}
-
-func TestNewAstPackagesXRootPath(t *testing.T) {
-	packsMap, err := NewAstPackagesXRootPath(runpath.PARENT.Path())
-	require.NoError(t, err)
-	t.Log(packsMap)
-}
-
-func TestMergeAstFilesXRootPath(t *testing.T) {
-	astFile, err := MergeAstFilesXRootPath(runpath.PARENT.Path())
-	require.NoError(t, err)
-	done.Done(ast.Print(token.NewFileSet(), astFile))
+	t.Log(string(syntaxgo_astnode.GetCode(srcData, astFunc)))
 }

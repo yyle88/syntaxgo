@@ -1,11 +1,11 @@
-package syntaxgo_astvtnorm
+package syntaxgo_aktnorm
 
 import (
 	"go/ast"
 	"strings"
 
 	"github.com/yyle88/syntaxgo/internal/utils"
-	"github.com/yyle88/syntaxgo/syntaxgo_ast"
+	"github.com/yyle88/syntaxgo/syntaxgo_astnode"
 )
 
 type NameTypeElement struct {
@@ -74,7 +74,7 @@ func GetNameTypeElements(astFields []*ast.Field, nameFunc MakeNameFunction, sour
 			sKind = string(source[ellipsis.Ellipsis-1 : one.Type.End()-1])
 			isEllipsis = true
 		} else {
-			sKind = strings.TrimSpace(syntaxgo_ast.GetNodeCode(source, one.Type))
+			sKind = strings.TrimSpace(string(syntaxgo_astnode.GetCode(source, one.Type)))
 		}
 		if len(one.Names) > 0 { //通常参数都是有名字的，但也会存在参数没有名字的情况，而返回值通常都是只有类型
 			for _, name := range one.Names {
@@ -111,7 +111,7 @@ func (xs NameTypeElements) Kinds() []string {
 }
 
 func (xs NameTypeElements) GetNamesAddressesStats() StatementParts {
-	return utils.SetPrefixToStrings("&", xs.Names())
+	return utils.SetPrefix2Strings("&", xs.Names())
 }
 
 func (xs NameTypeElements) GetFunctionParamsStats() StatementParts {
@@ -135,7 +135,7 @@ func (xs NameTypeElements) GetNamesKindsStats() StatementParts {
 }
 
 func (xs NameTypeElements) GetVariablesDefineLines() StatementLines {
-	return utils.SetPrefixToStrings("var ", xs.GetNamesKindsStats())
+	return utils.SetPrefix2Strings("var ", xs.GetNamesKindsStats())
 }
 
 func (xs NameTypeElements) GetVariablesGroupByKindsDefineLines() StatementLines {

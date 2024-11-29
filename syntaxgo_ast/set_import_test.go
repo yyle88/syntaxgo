@@ -1,7 +1,10 @@
 package syntaxgo_ast
 
 import (
+	"go/format"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestAddImportsOfPackages(t *testing.T) {
@@ -18,9 +21,13 @@ func TestAddImportsOfPackages(t *testing.T) {
 `
 	t.Log(code)
 
-	var newSrc = AddImportsOfPackages([]byte(code), []string{
+	var newSrc = InjectImports([]byte(code), []string{
 		"fmt",
 		"strconv",
 	})
-	t.Log(string(newSrc)) //虽然结果的代码看着可能有点别扭，但是没关系的，只要再配合golang代码的format就会完美的
+	t.Log(string(newSrc)) //待格式化的数据
+
+	resSrc, err := format.Source(newSrc)
+	require.NoError(t, err)
+	t.Log(string(resSrc)) //需要微调引用包
 }
