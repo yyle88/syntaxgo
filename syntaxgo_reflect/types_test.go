@@ -79,6 +79,12 @@ func TestGetTypeNameV3(t *testing.T) {
 	require.Equal(t, "Example", typeName)
 }
 
+func TestGetTypeNameV4(t *testing.T) {
+	typeName := GetTypeNameV4(&Example{})
+	t.Log(typeName)
+	require.Equal(t, "Example", typeName)
+}
+
 func TestGetPkgPathV2(t *testing.T) {
 	t.Log(GetPkgPathV2[Example]())
 	t.Log(GetPkgNameV2[Example]())
@@ -93,4 +99,9 @@ func TestGetPkgNameV3(t *testing.T) {
 
 	t.Log(GetPkgPathV3(&Example{}))
 	t.Log(GetPkgNameV3(&Example{}))
+}
+
+func TestGetPkgNameV4(t *testing.T) {
+	t.Log(GetPkgPathV4(&Example{}))
+	t.Log(GetPkgNameV4(&Example{}))
 }

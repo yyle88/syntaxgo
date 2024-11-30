@@ -2,14 +2,22 @@ package syntaxgo_aktnorm
 
 import "strings"
 
-type StatementParts []string //当得到参数列表/返回列表时，假如列表字段总以逗号分隔的形式出现在代码里，就使用这个类型
+// StatementParts represents a list of strings that are usually separated by commas.
+// StatementParts 通常用于表示一个以逗号分隔的字符串列表，常见于参数列表或返回值列表。
+type StatementParts []string
 
-func (parts StatementParts) MergeParts() string {
-	return strings.Join(parts, ", ")
+// MergeParts joins the elements in StatementParts with a comma and a space, and returns the resulting string.
+// MergeParts 将 StatementParts 中的元素用逗号和空格连接，并返回结果字符串。
+func (stmts StatementParts) MergeParts() string {
+	return strings.Join(stmts, ", ")
 }
 
-type StatementLines []string //当得到赋值语句/返回语句/函数调用语句时，这些语句间往往是以换行符分隔的，因此放在这里面
+// StatementLines represents a list of strings that are usually separated by newline characters.
+// StatementLines 通常用于表示一个以换行符分隔的字符串列表，常见于赋值语句、返回语句或函数调用语句。
+type StatementLines []string
 
-func (lines StatementLines) MergeLines() string {
-	return strings.Join(lines, "\n")
+// MergeLines joins the elements in StatementLines with a newline character, and returns the resulting string.
+// MergeLines 将 StatementLines 中的元素用换行符连接，并返回结果字符串。
+func (stmts StatementLines) MergeLines() string {
+	return strings.Join(stmts, "\n")
 }

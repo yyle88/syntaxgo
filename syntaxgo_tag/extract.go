@@ -8,6 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// ExtractTagValue extracts a specific part of a tag, such as the value of the "gorm" or "json" key in a tag like `gorm:"" json:""`.
 // ExtractTagValue 提取标签中的特定部分，比如 `gorm:"" json:""` 的 gorm 整体 或者 json 整体
 func ExtractTagValue(tag, key string) string {
 	// 正则表达式查找键值对
@@ -29,6 +30,7 @@ const (
 	INCLUDE_WHITESPACE_PREFIX ExtractTagFieldAction = "INCLUDE_WHITESPACE_PREFIX" //以前传 FALSE 的地方
 )
 
+// ExtractTagField extracts a specific part of a tag, such as `gorm:"column:name"`, considering both scenarios
 // ExtractTagField 提取标签中的特定部分，比如 gorm 里面的 column:name 这部分，Fields Tags
 func ExtractTagField(part, fieldName string, action ExtractTagFieldAction) string {
 	// 正则表达式查找键值对
@@ -50,6 +52,8 @@ func ExtractTagField(part, fieldName string, action ExtractTagFieldAction) strin
 	return ""
 }
 
+// ExtractTagValueIndex extracts the value of a specific key from the tag and returns the value's start and end indexes.
+// ExtractTagValueIndex 提取标签中指定键值对的值并返回该值的位置
 func ExtractTagValueIndex(tag, key string) (string, int, int) {
 	// 正则表达式查找键值对
 	regex := regexp.MustCompile(`\b` + regexp.QuoteMeta(key) + `\s*:\s*"([^"]*)"`)
@@ -63,6 +67,8 @@ func ExtractTagValueIndex(tag, key string) (string, int, int) {
 	return "", -1, -1
 }
 
+// ExtractTagFieldIndex extracts a specific part of the tag field and returns the start and end index of that part in the string.
+// ExtractTagFieldIndex 提取标签字段的特定部分并返回其在字符串中的位置
 func ExtractTagFieldIndex(part, fieldName string, action ExtractTagFieldAction) (string, int, int) {
 	// 正则表达式查找键值对
 	var regex *regexp.Regexp
@@ -82,9 +88,8 @@ func ExtractTagFieldIndex(part, fieldName string, action ExtractTagFieldAction) 
 	return "", -1, -1
 }
 
-// ExtractNoValueFieldNameIndex 匹配单键标签，比如 index 或者 uniqueIndex 这类标签，在简化情况下可以是没有值的
-// 返回的是键名的起止坐标，区间包含键名左右的空格部分
-// 目前下游使用这个函数的目的是提取到键名的位置，再往里面补充东西
+// ExtractNoValueFieldNameIndex is used to extract key names for single-key tags, such as `index` or `uniqueIndex`, where no value is provided. It returns the start and end positions of the key name, including any surrounding spaces.
+// ExtractNoValueFieldNameIndex 匹配单键标签，比如 index 或者 uniqueIndex 这类标签，在简化情况下可以是没有值的 返回的是键名的起止坐标，区间包含键名左右的空格部分
 func ExtractNoValueFieldNameIndex(part, fieldName string) (sdx, edx int) {
 	// 保留两个 \b，并在 fieldName 和分号/字符串结尾之间允许空格
 	re := regexp.MustCompile(fmt.Sprintf(`(\s*\b%s\b\s*)(?:;|$)`, regexp.QuoteMeta(fieldName)))
@@ -97,13 +102,13 @@ func ExtractNoValueFieldNameIndex(part, fieldName string) (sdx, edx int) {
 	return -1, -1
 }
 
-// ExtractFieldEqualsValueIndex 返回的是键值对中值的坐标 比如匹配的是 index:idx_abc 或者 uniqueIndex:udx_xyz 这种键值对
-// 返回的是值的起止坐标，同时，区间内包含前后的空格
-// 目前下游使用这个函数的目的是，获取到值的坐标，替换值的内容
+// ExtractFieldEqualsValueIndex returns the start and end positions of the value in a key-value pair, such as `index:idx_abc` or `uniqueIndex:udx_xyz`. The returned coordinates include any surrounding whitespace, which is useful when replacing or modifying the value.
+// ExtractFieldEqualsValueIndex 返回的是键值对中值的坐标 比如匹配的是 index:idx_abc 或者 uniqueIndex:udx_xyz 这种键值对 返回的是值的起止坐标，同时，区间内包含前后的空格
 func ExtractFieldEqualsValueIndex(part, fieldName, fieldValue string) (sdx, edx int) {
 	return ExtractFieldEqualsValueIndexV2(part, fieldName, fieldValue, []string{})
 }
 
+// ExtractFieldEqualsValueIndexV2 is similar to the previous function but allows custom terminators to be passed,
 // ExtractFieldEqualsValueIndexV2 和前面的功能相同，但提供自定义分隔符的功能
 func ExtractFieldEqualsValueIndexV2(part string, fieldName string, fieldValue string, terminators []string) (int, int) {
 	//首先确保有一个分隔符是分号，这样将来和 $ 或的时候就没有语法错误

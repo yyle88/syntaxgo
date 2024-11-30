@@ -10,6 +10,6 @@ func TestGetPkgPaths(t *testing.T) {
 
 func TestGetPkgPathsToImportWithQuotes(t *testing.T) {
 	objectsTypes := GetTypes([]any{Example{}, ExampleOneOne{}, ExampleTwoTwo{}})
-	pkgPaths := GetPkgPathsToImportWithQuotes(objectsTypes)
+	pkgPaths := GetQuotedPackageImportPaths(objectsTypes)
 	t.Log(pkgPaths)
 }

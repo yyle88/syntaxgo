@@ -1,6 +1,33 @@
 # syntaxgo
-就是golang的go/ast语法分析树和golang的reflect反射包的封装，让你更方便的去分析代码，最终实现自动生成新功能代码的效果
 
-当然目前还只是在初级阶段，有可能需要再把命名重新改改，因此暂不上v1.0.0啦。
+**syntaxgo** is a wrapper around Go's `go/ast` Abstract Syntax Tree and Go's `reflect` package
+
+designed to make it easier to analyze code and ultimately automate the generation.
+
+## CHINESE README
+
+[中文说明](README.zh.md)
+
+## Installation
+
+```bash
+go get github.com/yyle88/syntaxgo
+```
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## Support
+
+Welcome to contribute to this project by submitting pull requests or reporting issues.
+
+If you find this package helpful, give it a star on GitHub!
+
+**Thank you for your support!**
+
+**Happy Coding with `syntaxgo`!** 🎉
 
 Give me stars. Thank you!!!

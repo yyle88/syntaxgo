@@ -31,9 +31,9 @@ Package `syntaxgo_ast` 提供了处理 Go 源代码语法树 (AST) 的工具。�
 需要注意的是，本文件的部分逻辑使用了已被标记为过时的 `ast.Package` 类型以及相关方法（例如 `ast.MergePackageFiles`）。这意味着未来的 Go 版本可能会移除这些功能，因此需要逐步重构以适应新版本。
 */
 
+// Deprecated: This function uses the deprecated `ast.Package` and `ast.MergePackageFiles` methods.
 // MergeOnePackageFiles merges all Go source files of a specific package within a given directory.
 // MergeOnePackageFiles 合并指定目录下某个包的所有 Go 源文件，生成一个语法树。
-// Deprecated: This function uses the deprecated `ast.Package` and `ast.MergePackageFiles` methods.
 // Note: This has limited usefulness and may need refactoring in the future.
 func MergeOnePackageFiles(root string, packageName string) (*AstBundle, error) {
 	var fileSet = token.NewFileSet()
@@ -57,9 +57,9 @@ func MergeOnePackageFiles(root string, packageName string) (*AstBundle, error) {
 	return res, nil
 }
 
+// Deprecated: This function uses the deprecated `ast.Package` type and should be updated in the future.
 // ParseRootGetPackages parses the entire directory and retrieves a map of package names to package information.
 // ParseRootGetPackages 解析指定目录下的所有 Go 包，返回包名到包信息的映射。
-// Deprecated: This function uses the deprecated `ast.Package` type and should be updated in the future.
 // Note: The function name could be more descriptive of its purpose.
 func ParseRootGetPackages(fset *token.FileSet, root string) (map[string]*ast.Package, error) {
 	packagesMap, err := parser.ParseDir(
@@ -74,10 +74,10 @@ func ParseRootGetPackages(fset *token.FileSet, root string) (map[string]*ast.Pac
 	return packagesMap, nil
 }
 
+// Deprecated: This function uses the deprecated `ast.Package` type and `ast.MergePackageFiles` method.
 // MergeSubPackageFiles merges all Go source files of the only package in the given directory.
 // If there is more than one package, it returns an error.
 // MergeSubPackageFiles 合并指定目录下唯一包的所有 Go 源文件，若目录中存在多个包则返回错误。
-// Deprecated: This function uses the deprecated `ast.Package` type and `ast.MergePackageFiles` method.
 func MergeSubPackageFiles(root string) (*AstBundle, error) {
 	var fileSet = token.NewFileSet()
 	// Parse the directory and retrieve a map of package names to package information.
