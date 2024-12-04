@@ -10,7 +10,7 @@ require (
 	github.com/yyle88/must v0.0.9
 	github.com/yyle88/printgo v1.0.1
 	github.com/yyle88/rese v0.0.1
-	github.com/yyle88/runpath v1.0.21
+	github.com/yyle88/runpath v1.0.22
 	github.com/yyle88/tern v0.0.3
 	github.com/yyle88/zaplog v0.0.16
 	go.uber.org/zap v1.27.0

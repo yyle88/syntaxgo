@@ -2,7 +2,7 @@
 
 **syntaxgo** is a wrapper around Go's `go/ast` Abstract Syntax Tree and Go's `reflect` package
 
-designed to make it easier to analyze code and ultimately automate the generation.
+**syntaxgo** is designed to make it easier to analyze code and then automate the generation.
 
 ## CHINESE README
 
