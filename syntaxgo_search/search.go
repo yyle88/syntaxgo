@@ -118,7 +118,7 @@ func FindArrayTypeByName(astFile *ast.File, arrayName string) *ast.ArrayType {
 
 // FindStructTypeByName finds a struct type by its name in the given AST file and returns its content (including brackets).
 // FindStructTypeByName 根据名称查找结构体类型，返回结构体内的内容（含括号）。
-func FindStructTypeByName(astFile *ast.File, structName string) *ast.StructType {
+func FindStructTypeByName(astFile *ast.File, structName string) (structContent *ast.StructType, found bool) {
 	for _, decl := range astFile.Decls {
 		switch item := decl.(type) {
 		case *ast.GenDecl:
@@ -134,7 +134,7 @@ func FindStructTypeByName(astFile *ast.File, structName string) *ast.StructType 
 						case *ast.StructType:
 							// Return the struct type.
 							// 返回结构体类型。
-							return typeSpec
+							return typeSpec, true
 						}
 					}
 				}
@@ -143,7 +143,7 @@ func FindStructTypeByName(astFile *ast.File, structName string) *ast.StructType 
 	}
 	// Return nil if struct type is not found.
 	// 如果没有找到结构体类型，返回nil。
-	return nil
+	return nil, false
 }
 
 // MapStructTypesByName finds all struct types in the given AST file and returns a map of struct names to their corresponding struct content (including brackets).
@@ -174,9 +174,39 @@ func MapStructTypesByName(astFile *ast.File) map[string]*ast.StructType {
 	return structTypes
 }
 
-// MapStructTypeDeclarationsByName finds all struct types in the given AST file and returns a map of struct names to their complete declarations (from type to closing bracket).
-// MapStructTypeDeclarationsByName 查找给定AST文件中的所有结构体类型，并返回一个结构体名称到其完整声明（从type开始到闭括号结束）的映射。
-func MapStructTypeDeclarationsByName(astFile *ast.File) map[string]*ast.GenDecl {
+// FindStructDeclarationByName finds a struct type by its name in the given AST file and returns its declaration and content (including type and brackets).
+// FindStructDeclarationByName 根据名称查找结构体类型，返回结构体的定义和内容（含type开头和括号结尾）。
+func FindStructDeclarationByName(astFile *ast.File, structName string) (structDeclaration *ast.GenDecl, found bool) {
+	for _, decl := range astFile.Decls {
+		switch item := decl.(type) {
+		case *ast.GenDecl:
+			// Iterate through type specifications in the general declaration.
+			// 遍历一般声明中的类型规范。
+			for _, spec := range item.Specs {
+				switch spec := spec.(type) {
+				case *ast.TypeSpec:
+					// Check if the name matches the given struct name.
+					// 检查名称是否与给定的结构体名称匹配。
+					if spec.Name.Name == structName {
+						switch spec.Type.(type) {
+						case *ast.StructType:
+							// Return the struct type.
+							// 返回结构体类型。
+							return item, true
+						}
+					}
+				}
+			}
+		}
+	}
+	// Return nil if struct type is not found.
+	// 如果没有找到结构体类型，返回nil。
+	return nil, false
+}
+
+// MapStructDeclarationsByName finds all struct types in the given AST file and returns a map of struct names to their complete declarations (from type to closing bracket).
+// MapStructDeclarationsByName 查找给定AST文件中的所有结构体类型，并返回一个结构体名称到其完整声明（从type开始到闭括号结束）的映射。
+func MapStructDeclarationsByName(astFile *ast.File) map[string]*ast.GenDecl {
 	structDeclarations := map[string]*ast.GenDecl{}
 	for _, decl := range astFile.Decls {
 		switch item := decl.(type) {

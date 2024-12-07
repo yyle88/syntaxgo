@@ -62,3 +62,29 @@ func TestFindArrayTypeByName(t *testing.T) {
 	require.NotNil(t, astFunc)
 	t.Log(string(syntaxgo_astnode.GetCode(srcData, astFunc)))
 }
+
+func TestFindStructTypeByName(t *testing.T) {
+	path := runpath.CurrentPath()
+	srcData := done.VAE(os.ReadFile(path)).Nice()
+	astBundle := rese.P1(syntaxgo_ast.NewAstBundleV2(token.NewFileSet(), srcData))
+
+	astFile, _ := astBundle.GetBundle()
+
+	astStruct, ok := FindStructTypeByName(astFile, "Example")
+	require.True(t, ok)
+	require.NotNil(t, astStruct)
+	t.Log(string(syntaxgo_astnode.GetCode(srcData, astStruct)))
+}
+
+func TestFindStructDeclarationByName(t *testing.T) {
+	path := runpath.CurrentPath()
+	srcData := done.VAE(os.ReadFile(path)).Nice()
+	astBundle := rese.P1(syntaxgo_ast.NewAstBundleV2(token.NewFileSet(), srcData))
+
+	astFile, _ := astBundle.GetBundle()
+
+	astStruct, ok := FindStructDeclarationByName(astFile, "Example")
+	require.True(t, ok)
+	require.NotNil(t, astStruct)
+	t.Log(string(syntaxgo_astnode.GetCode(srcData, astStruct)))
+}
