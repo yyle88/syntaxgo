@@ -4,6 +4,7 @@ import (
 	"go/ast"
 	"strings"
 
+	"github.com/yyle88/must"
 	"github.com/yyle88/syntaxgo/internal/utils"
 	"github.com/yyle88/syntaxgo/syntaxgo_astnode"
 )
@@ -48,23 +49,42 @@ func (element *NameTypeElement) AdjustTypeWithPackage(
 	if strings.Contains(element.Kind, ".") {
 		return // Already includes package name / 已经包含包名
 	}
-	if s := element.Kind[0]; string(s) == "*" {
-		if vcc := element.Kind[1]; vcc >= 'A' && vcc <= 'Z' {
-			className := element.Kind[1:]
+
+	shortKind := strings.TrimSpace(element.Kind)
+
+	if element.IsEllipsis {
+		must.True(strings.HasPrefix(shortKind, "..."))
+		shortKind = strings.TrimPrefix(shortKind, "...")
+		shortKind = strings.TrimSpace(shortKind)
+	}
+
+	if s := shortKind[0]; string(s) == "*" {
+		if vcc := shortKind[1]; vcc >= 'A' && vcc <= 'Z' {
+			className := shortKind[1:]
 			if _, ok := genericTypeParams[className]; ok {
 				return // It's a generic type / 是泛型类型
 			}
-			element.Kind = "*" + packageName + "." + className
+			shortKind = "*" + packageName + "." + className
+		} else {
+			return // basic-type(int string float64) || // not-exportable-type
 		}
 	} else {
-		if s := element.Kind[0]; s >= 'A' && s <= 'Z' {
-			className := element.Kind
+		if s := shortKind[0]; s >= 'A' && s <= 'Z' {
+			className := shortKind
 			if _, ok := genericTypeParams[className]; ok {
 				return // It's a generic type / 是泛型类型
 			}
-			element.Kind = packageName + "." + className
+			shortKind = packageName + "." + className
+		} else {
+			return // basic-type(int string float64) || // not-exportable-type
 		}
 	}
+
+	if element.IsEllipsis {
+		shortKind = "..." + shortKind
+	}
+
+	element.Kind = shortKind
 }
 
 // MakeNameFunction generates a name for a parameter or return value.
