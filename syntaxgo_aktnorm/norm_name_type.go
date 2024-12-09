@@ -46,45 +46,50 @@ func (element *NameTypeElement) AdjustTypeWithPackage(
 	packageName string, // The package name / 包名
 	genericTypeParams map[string]ast.Expr, // Map of generic type parameters / 泛型类型参数的映射
 ) {
-	if strings.Contains(element.Kind, ".") {
-		return // Already includes package name / 已经包含包名
+	shortKind, adjusted := adjustKindWithPackage(strings.TrimSpace(element.Kind), packageName, genericTypeParams, element.IsEllipsis)
+	if !adjusted {
+		return
 	}
+	element.Kind = shortKind
+}
 
-	shortKind := strings.TrimSpace(element.Kind)
-
-	if element.IsEllipsis {
+func adjustKindWithPackage(shortKind string, packageName string, genericTypeParams map[string]ast.Expr, isVariadic bool) (string, bool) {
+	if isVariadic {
 		must.True(strings.HasPrefix(shortKind, "..."))
 		shortKind = strings.TrimPrefix(shortKind, "...")
 		shortKind = strings.TrimSpace(shortKind)
+	}
+
+	if strings.Contains(shortKind, ".") {
+		return "", false // already includes package name / 已经包含包名
 	}
 
 	if s := shortKind[0]; string(s) == "*" {
 		if vcc := shortKind[1]; vcc >= 'A' && vcc <= 'Z' {
 			className := shortKind[1:]
 			if _, ok := genericTypeParams[className]; ok {
-				return // It's a generic type / 是泛型类型
+				return "", false // It's a generic type / 是泛型类型
 			}
 			shortKind = "*" + packageName + "." + className
 		} else {
-			return // basic-type(int string float64) || // not-exportable-type
+			return "", false // basic-type(int string float64) || // not-exportable-type
 		}
 	} else {
 		if s := shortKind[0]; s >= 'A' && s <= 'Z' {
 			className := shortKind
 			if _, ok := genericTypeParams[className]; ok {
-				return // It's a generic type / 是泛型类型
+				return "", false // It's a generic type / 是泛型类型
 			}
 			shortKind = packageName + "." + className
 		} else {
-			return // basic-type(int string float64) || // not-exportable-type
+			return "", false // basic-type(int string float64) || // not-exportable-type
 		}
 	}
 
-	if element.IsEllipsis {
+	if isVariadic {
 		shortKind = "..." + shortKind
 	}
-
-	element.Kind = shortKind
+	return shortKind, true
 }
 
 // MakeNameFunction generates a name for a parameter or return value.
