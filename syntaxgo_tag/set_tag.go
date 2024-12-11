@@ -21,16 +21,16 @@ const (
 // SetTagFieldValue 根据给定的 key 和 field name 更新结构体标签中指定字段的值。
 // 假如字段不存在，它会将新的字段插入到标签的顶部或末尾。
 func SetTagFieldValue(tag, key, field, value string, insertLocation InsertLocation) string {
-	zaplog.LOG.Debug("modify-tag-field-value", zap.String("tag", tag))
+	zaplog.LOG.Debug("set-tag-field-value", zap.String("tag", tag))
 
 	tagKeyValue, stx, etx := ExtractTagValueIndex(tag, key)
 	if stx < 0 || etx < 0 {
 		zaplog.LOG.Panic("IMPOSSIBLE") // 能进到这个函数里的都是已经找到标签的
 	}
-	zaplog.LOG.Debug("modify-tag-field-value", zap.String("tag-key-value", tagKeyValue), zap.Int("stx", stx), zap.Int("etx", etx))
+	zaplog.LOG.Debug("set-tag-field-value", zap.String("tag-key-value", tagKeyValue), zap.Int("stx", stx), zap.Int("etx", etx))
 
 	fieldValue, sfx, efx := ExtractTagFieldIndex(tagKeyValue, field, INCLUDE_WHITESPACE_PREFIX)
-	if sfx < 0 || efx < 0 { // 表示没找到 rule 自定义的内容
+	if sfx < 0 || efx < 0 { // 表示没找到 cnm 自定义的内容
 		newField := fmt.Sprintf("%s:%s;", field, value)
 
 		switch insertLocation {
@@ -51,12 +51,12 @@ func SetTagFieldValue(tag, key, field, value string, insertLocation InsertLocati
 			panic(erero.New("WRONG"))
 		}
 	}
-	zaplog.LOG.Debug("modify-tag-field-value", zap.String("field-value", fieldValue), zap.Int("sfx", sfx), zap.Int("efx", efx))
+	zaplog.LOG.Debug("set-tag-field-value", zap.String("field-value", fieldValue), zap.Int("sfx", sfx), zap.Int("efx", efx))
 
 	spx := stx + sfx // 把起点坐标补上前面的起始坐标
 	epx := stx + efx // 把终点坐标补上前面的起始坐标
 
-	zaplog.LOG.Debug("modify-tag-field-value", zap.String("field-value", tag[spx:epx]))
+	zaplog.LOG.Debug("set-tag-field-value", zap.String("field-value", tag[spx:epx]))
 
 	newValue := value
 	if tag[epx] != ';' {
