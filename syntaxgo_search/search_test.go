@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"go/token"
 	"os"
+	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -11,6 +13,7 @@ import (
 	"github.com/yyle88/rese"
 	"github.com/yyle88/runpath"
 	"github.com/yyle88/runpath/runtestpath"
+	"github.com/yyle88/syntaxgo/internal/utils"
 	"github.com/yyle88/syntaxgo/syntaxgo_ast"
 	"github.com/yyle88/syntaxgo/syntaxgo_astnode"
 )
@@ -87,4 +90,29 @@ func TestFindStructDeclarationByName(t *testing.T) {
 	require.True(t, ok)
 	require.NotNil(t, astStruct)
 	t.Log(string(syntaxgo_astnode.GetCode(srcData, astStruct)))
+}
+
+func TestFindFunctions(t *testing.T) {
+	root := runpath.PARENT.Path()
+
+	require.NoError(t, filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+		if !utils.IsGoSourceFile(info) {
+			return nil
+		}
+		if strings.HasSuffix(info.Name(), "_test.go") {
+			return nil
+		}
+
+		astBundle := rese.P1(syntaxgo_ast.NewAstBundleV4(path))
+
+		astFile, _ := astBundle.GetBundle()
+
+		astFunctions := FindFunctions(astFile)
+
+		for _, astFunction := range astFunctions {
+			t.Log(astFunction.Name.Name, "//", GetFunctionComment(astFunction))
+		}
+
+		return nil
+	}))
 }
