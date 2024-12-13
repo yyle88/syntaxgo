@@ -9,7 +9,7 @@ require (
 	github.com/yyle88/erero v1.0.14
 	github.com/yyle88/must v0.0.10
 	github.com/yyle88/printgo v1.0.1
-	github.com/yyle88/rese v0.0.1
+	github.com/yyle88/rese v0.0.2
 	github.com/yyle88/runpath v1.0.22
 	github.com/yyle88/tern v0.0.3
 	github.com/yyle88/zaplog v0.0.16
