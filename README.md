@@ -45,8 +45,8 @@ Give me stars. Thank you!!!
 
 ---
 
-## See stars
+## Starring
 
-[![see stars](https://starchart.cc/yyle88/syntaxgo.svg?variant=adaptive)](https://starchart.cc/yyle88/syntaxgo)
+[![starring](https://starchart.cc/yyle88/syntaxgo.svg?variant=adaptive)](https://starchart.cc/yyle88/syntaxgo)
 
 ---
