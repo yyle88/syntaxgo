@@ -1,4 +1,4 @@
-package syntaxgo_aktnorm
+package syntaxgo_astnorm
 
 import (
 	"go/token"

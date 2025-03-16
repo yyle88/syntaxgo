@@ -1,1 +1,1 @@
-package syntaxgo_aktnorm
+package syntaxgo_astnorm
