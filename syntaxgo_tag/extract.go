@@ -39,11 +39,12 @@ func ExtractTagField(part, fieldName string, action ExtractTagFieldAction) strin
 	// \s 空白
 	// 认为存在需要完整匹配 和 排除前导空格 两种需求，通常在写标签内部的k:v时不应该添加前导空格
 	var regex *regexp.Regexp
-	if action == EXCLUDE_WHITESPACE_PREFIX {
+	switch action {
+	case EXCLUDE_WHITESPACE_PREFIX:
 		regex = regexp.MustCompile(`\b` + regexp.QuoteMeta(fieldName) + `\s*:\s*([^;]+)`)
-	} else if action == INCLUDE_WHITESPACE_PREFIX {
+	case INCLUDE_WHITESPACE_PREFIX:
 		regex = regexp.MustCompile(`\b` + regexp.QuoteMeta(fieldName) + `\s*:([^;]+)`)
-	} else {
+	default:
 		panic(errors.New("WRONG"))
 	}
 	if matches := regex.FindStringSubmatch(part); len(matches) > 1 {
@@ -72,11 +73,12 @@ func ExtractTagValueIndex(tag, key string) (string, int, int) {
 func ExtractTagFieldIndex(part, fieldName string, action ExtractTagFieldAction) (string, int, int) {
 	// 正则表达式查找键值对
 	var regex *regexp.Regexp
-	if action == EXCLUDE_WHITESPACE_PREFIX {
+	switch action {
+	case EXCLUDE_WHITESPACE_PREFIX:
 		regex = regexp.MustCompile(`\b` + regexp.QuoteMeta(fieldName) + `\s*:\s*([^;]+)`)
-	} else if action == INCLUDE_WHITESPACE_PREFIX {
+	case INCLUDE_WHITESPACE_PREFIX:
 		regex = regexp.MustCompile(`\b` + regexp.QuoteMeta(fieldName) + `\s*:([^;]+)`)
-	} else {
+	default:
 		panic(errors.New("WRONG"))
 	}
 	if indexes := regex.FindStringSubmatchIndex(part); len(indexes) > 3 {
