@@ -18,13 +18,19 @@ func GetTypes(objects []any) []reflect.Type {
 	return results
 }
 
-// GetPkgPaths returns the package paths of the provided reflect.Type objects.
+// GetPkgPaths returns the package paths of provided reflect.Type objects.
 // GetPkgPaths 返回给定 reflect.Type 对象的包路径。
 func GetPkgPaths(objectsTypes []reflect.Type) []string {
 	var results = make([]string, 0, len(objectsTypes))
 	for _, a := range objectsTypes {
-		// Append the package path of each reflect.Type to the results slice.
-		// 将每个 reflect.Type 的包路径添加到结果切片中。
+		if a.Kind() == reflect.Ptr {
+			// If the object is pointer type, get the underlying type's package path.
+			// 如果类型是指针，则获取基础类型的包路径（适配指针类型）。
+			results = append(results, done.Nice(a.Elem().PkgPath()))
+			continue
+		}
+		// Append the package path of each reflect.Type to the result slice.
+		// 将每个 reflect.Type 的包路径添加到结果里。
 		results = append(results, done.Nice(a.PkgPath()))
 	}
 	return results

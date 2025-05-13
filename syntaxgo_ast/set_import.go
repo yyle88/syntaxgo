@@ -44,9 +44,9 @@ Package `syntaxgo_ast` 提供了管理和操作 Go 源代码抽象语法树（AS
 // PackageImportOptions is used to manage the import paths for Go packages.
 // PackageImportOptions 用于管理 Go 包的导入路径。
 type PackageImportOptions struct {
-	Packages        []string       // List of package paths. // 直接设置包路径列表
-	ReferencedTypes []reflect.Type // List of referenced types to find package paths. // 设置反射类型，通过类型能找到包路径
-	InferredObjects []any          // List of inferred objects to find package paths. // 设置要引用的对象列表(非指针对象)，通过对象也能找到对象的包路径
+	packages        []string       // List of package paths. // 直接设置包路径列表
+	referencedTypes []reflect.Type // List of referenced types to find package paths. // 设置反射类型，通过类型能找到包路径
+	inferredObjects []any          // List of inferred objects to find package paths. // 设置要引用的对象列表(非指针对象)，通过对象也能找到对象的包路径
 }
 
 // NewPackageImportOptions creates and returns a new PackageImportOptions instance.
@@ -58,21 +58,21 @@ func NewPackageImportOptions() *PackageImportOptions {
 // SetPkgPath adds a package path to the list of packages to be imported.
 // SetPkgPath 将包路径添加到待导入的包列表中。
 func (param *PackageImportOptions) SetPkgPath(pkgPath string) *PackageImportOptions {
-	param.Packages = append(param.Packages, pkgPath)
+	param.packages = append(param.packages, pkgPath)
 	return param
 }
 
 // SetReferencedType adds a referenced type to the list of referenced types.
 // SetReferencedType 将一个引用类型添加到引用类型列表中。
 func (param *PackageImportOptions) SetReferencedType(reflectType reflect.Type) *PackageImportOptions {
-	param.ReferencedTypes = append(param.ReferencedTypes, reflectType)
+	param.referencedTypes = append(param.referencedTypes, reflectType)
 	return param
 }
 
 // SetInferredObject adds an inferred object to the list of inferred objects.
 // SetInferredObject 将一个推断对象添加到推断对象列表中。
 func (param *PackageImportOptions) SetInferredObject(object any) *PackageImportOptions {
-	param.InferredObjects = append(param.InferredObjects, object)
+	param.inferredObjects = append(param.inferredObjects, object)
 	return param
 }
 
@@ -80,9 +80,9 @@ func (param *PackageImportOptions) SetInferredObject(object any) *PackageImportO
 // GetPkgPaths 返回从包路径、引用类型和推断对象中合并得到的包路径列表。
 func (param *PackageImportOptions) GetPkgPaths() []string {
 	return utils.SafeMerge(
-		param.Packages,
-		syntaxgo_reflect.GetPkgPaths(param.ReferencedTypes),
-		syntaxgo_reflect.GetPkgPaths(syntaxgo_reflect.GetTypes(param.InferredObjects)),
+		param.packages,
+		syntaxgo_reflect.GetPkgPaths(param.referencedTypes),
+		syntaxgo_reflect.GetPkgPaths(syntaxgo_reflect.GetTypes(param.inferredObjects)),
 	)
 }
 

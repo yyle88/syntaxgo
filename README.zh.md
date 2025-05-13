@@ -13,9 +13,9 @@
 go get github.com/yyle88/syntaxgo
 ```
 
-## 许可协议
+## 许可证协议
 
-此项目采用 MIT 许可证，详情请参阅 [LICENSE](LICENSE) 文件。
+项目采用 MIT 许可证，详情请参阅 [LICENSE](LICENSE)。
 
 ---
 
