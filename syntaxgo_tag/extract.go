@@ -41,9 +41,9 @@ func ExtractTagField(part, fieldName string, action ExtractTagFieldAction) strin
 	var regex *regexp.Regexp
 	switch action {
 	case EXCLUDE_WHITESPACE_PREFIX:
-		regex = regexp.MustCompile(`\b` + regexp.QuoteMeta(fieldName) + `\s*:\s*([^;]+)`)
+		regex = regexp.MustCompile(`\b` + regexp.QuoteMeta(fieldName) + `\s*:\s*([^;]*)`)
 	case INCLUDE_WHITESPACE_PREFIX:
-		regex = regexp.MustCompile(`\b` + regexp.QuoteMeta(fieldName) + `\s*:([^;]+)`)
+		regex = regexp.MustCompile(`\b` + regexp.QuoteMeta(fieldName) + `\s*:([^;]*)`)
 	default:
 		panic(errors.New("WRONG"))
 	}
@@ -75,9 +75,9 @@ func ExtractTagFieldIndex(part, fieldName string, action ExtractTagFieldAction) 
 	var regex *regexp.Regexp
 	switch action {
 	case EXCLUDE_WHITESPACE_PREFIX:
-		regex = regexp.MustCompile(`\b` + regexp.QuoteMeta(fieldName) + `\s*:\s*([^;]+)`)
+		regex = regexp.MustCompile(`\b` + regexp.QuoteMeta(fieldName) + `\s*:\s*([^;]*)`)
 	case INCLUDE_WHITESPACE_PREFIX:
-		regex = regexp.MustCompile(`\b` + regexp.QuoteMeta(fieldName) + `\s*:([^;]+)`)
+		regex = regexp.MustCompile(`\b` + regexp.QuoteMeta(fieldName) + `\s*:([^;]*)`)
 	default:
 		panic(errors.New("WRONG"))
 	}

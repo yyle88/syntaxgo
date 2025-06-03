@@ -6,13 +6,13 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.10.0
 	github.com/yyle88/done v1.0.25
-	github.com/yyle88/erero v1.0.20
+	github.com/yyle88/erero v1.0.21
 	github.com/yyle88/must v0.0.23
 	github.com/yyle88/printgo v1.0.5
 	github.com/yyle88/rese v0.0.10
 	github.com/yyle88/runpath v1.0.23
 	github.com/yyle88/tern v0.0.8
-	github.com/yyle88/zaplog v0.0.22
+	github.com/yyle88/zaplog v0.0.23
 	go.uber.org/zap v1.27.0
 	golang.org/x/exp v0.0.0-20250210185358-939b2ce775ac
 	golang.org/x/tools v0.30.0
