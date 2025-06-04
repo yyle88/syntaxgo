@@ -94,7 +94,7 @@ func ExtractTagFieldIndex(part, fieldName string, action ExtractTagFieldAction) 
 // ExtractNoValueFieldNameIndex 匹配单键标签，比如 index 或者 uniqueIndex 这类标签，在简化情况下可以是没有值的 返回的是键名的起止坐标，区间包含键名左右的空格部分
 func ExtractNoValueFieldNameIndex(part, fieldName string) (sdx, edx int) {
 	// 保留两个 \b，并在 fieldName 和分号/字符串结尾之间允许空格
-	re := regexp.MustCompile(fmt.Sprintf(`(\s*\b%s\b\s*)(?:;|$)`, regexp.QuoteMeta(fieldName)))
+	re := regexp.MustCompile(fmt.Sprintf(`(\s*\b%s\b\s*(?::\s*)?)(?:;|$)`, regexp.QuoteMeta(fieldName)))
 
 	// 查找匹配的位置
 	matches := re.FindStringSubmatchIndex(part)

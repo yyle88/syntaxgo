@@ -278,6 +278,27 @@ func TestExtractNoValueFieldNameIndex_15(t *testing.T) {
 	require.Equal(t, "field2 ", tmp[sdx:edx])
 }
 
+func TestExtractNoValueFieldNameIndex_16(t *testing.T) {
+	const tmp = "column:name;index:" // 有冒号但无值，仍应视为无值，通过
+	sdx, edx := ExtractNoValueFieldNameIndex(tmp, "index")
+	t.Log(sdx, edx)
+	require.Equal(t, "index:", tmp[sdx:edx])
+}
+
+func TestExtractNoValueFieldNameIndex_17(t *testing.T) {
+	const tmp = "column:name;index:value" // 没有分号结尾，且有值，不通过
+	sdx, edx := ExtractNoValueFieldNameIndex(tmp, "index")
+	require.Equal(t, -1, sdx)
+	require.Equal(t, -1, edx)
+}
+
+func TestExtractNoValueFieldNameIndex_18(t *testing.T) {
+	const tmp = "column:name;  index\t :  \t ;field2" // 含制表符、空格，但无值，通过
+	sdx, edx := ExtractNoValueFieldNameIndex(tmp, "index")
+	t.Log(sdx, edx)
+	require.Equal(t, "  index\t :  \t ", tmp[sdx:edx])
+}
+
 func TestExtractFieldEqualsValueIndex(t *testing.T) {
 	const tmp = "column:name;index:idx_myname;field2:value"
 
